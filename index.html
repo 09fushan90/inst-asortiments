@@ -457,6 +457,7 @@ cursor:pointer;
 <script>
 
 let scale = 1;
+let startDistance = 0;
 
 function openFullscreen(src){
   const img = document.getElementById("fullscreenImg");
@@ -472,11 +473,28 @@ function closeFullscreen(){
 
 const img = document.getElementById("fullscreenImg");
 
-img.addEventListener("wheel", function(e){
-  e.preventDefault();
-  scale += e.deltaY * -0.01;
-  scale = Math.min(Math.max(.5, scale), 4);
-  img.style.transform = `scale(${scale})`;
+// функция расстояния между пальцами
+function getDistance(touches){
+  return Math.sqrt(
+    Math.pow(touches[0].clientX - touches[1].clientX,2) +
+    Math.pow(touches[0].clientY - touches[1].clientY,2)
+  );
+}
+
+img.addEventListener("touchstart", function(e){
+  if(e.touches.length === 2){
+    startDistance = getDistance(e.touches);
+  }
+});
+
+img.addEventListener("touchmove", function(e){
+  if(e.touches.length === 2){
+    e.preventDefault();
+    let newDistance = getDistance(e.touches);
+    let zoom = newDistance / startDistance;
+    scale = Math.min(Math.max(1 * zoom,1),4);
+    img.style.transform = `scale(${scale})`;
+  }
 });
 
 </script>
