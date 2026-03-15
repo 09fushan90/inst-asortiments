@@ -185,19 +185,30 @@ let products = [];
 let categories = [];
 
 // Слухаємо Firebase
-db.ref('products').on('value', snapshot => {
-  products = snapshot.val() || [];
-  renderProducts();
-});
-db.ref('categories').on('value', snapshot => {
-  categories = snapshot.val() || [];
+async function loadData(){
+
+  const productsSnap = await db.ref("products").get();
+  products = productsSnap.val() || [];
+
+  const categoriesSnap = await db.ref("categories").get();
+  categories = categoriesSnap.val() || [];
+
   populateCategorySelects();
-});
+  renderProducts();
+
+  hideLoader();
+}
+
+loadData();
 
 function saveToDatabase(){
   db.ref('products').set(products);
   db.ref('categories').set(categories);
 }
+function hideLoader(){
+  document.getElementById("loader").classList.add("hide");
+}
+
 
 // Категорії
 function populateCategorySelects(){
@@ -632,12 +643,4 @@ async function uploadImagesToFirebase(files){
 
 </script>
 </body>
-<script>
-window.addEventListener("load", function(){
-  setTimeout(function(){
-    document.getElementById("loader").classList.add("hide");
-  },10000);
-});
-</script>
-
 </html>
