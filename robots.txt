@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-
-Sitemap: https://09fushan90.github.io/vesna/sitemap.xml
+Sitemap: https://09fushan90.github.io/inst-asortiments/sitemap.xml
