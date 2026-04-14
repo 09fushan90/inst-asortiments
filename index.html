@@ -54,7 +54,7 @@
 
 .product{
 background:#111;
-padding:20px;
+padding:95px 20px 20px;
 border:5px solid #90ee90;
 text-align:center;
 transition:transform 0.3s, box-shadow 0.3s;
@@ -92,16 +92,23 @@ body.no-scroll {
 }
 body {margin:0; font-family:Arial; background:#000; color:#90ee90; position:relative; min-height:100vh; overflow-x:hidden;}
 body::before {content:"Inst asortiments"; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:200px; color:rgba(144,238,144,0.05); font-weight:bold; white-space:nowrap; z-index:0; pointer-events:none;}
-header {background:#111; padding:20px; text-align:center; font-size:26px; position:relative; z-index:2;}
-.container {padding:20px; max-width:1300px; margin:auto; position:relative; z-index:2;}
-.search-box {text-align:center; margin-bottom:15px; color:#90ee90;}
+header {background:#111; padding:95px 20px 20px; text-align:center; font-size:26px; position:relative; z-index:2;}
+.container {padding:95px 20px 20px; max-width:1300px; margin:auto; position:relative; z-index:2;}
+.search-box {
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+margin:0 0 20px 0;
+}
 .search-box input{
-  padding:11px;
-  width:100%;
-  max-width:100%;
-  border:none;
-  color:#000;
-  box-sizing:border-box;
+padding:12px;
+width:50%;
+border:none;
+color:#000;
+font-size:16px;
+border-radius:10px;
+box-sizing:border-box;
 }
 
 .products {
@@ -211,7 +218,15 @@ input, textarea, select{width:100%; padding:8px; margin:5px 0; border:none;}
 .leaf{position:fixed; top:-50px; font-size:24px; color:#32CD32; z-index:1; pointer-events:none; user-select:none; animation-name:fall; animation-timing-function:linear;}
 @keyframes fall{0%{transform:translateY(0) rotate(0deg); opacity:1;}100%{transform:translateY(110vh) rotate(360deg); opacity:0;}}
 @media(max-width:900px){.products{grid-template-columns:repeat(2,1fr);}}
-@media(max-width:600px){.products{grid-template-columns:1fr;}.search-box input{width:100%;} body::before{font-size:80px;}}
+@media(max-width:600px){.products{grid-template-columns:1fr;}.search-box input{
+padding:12px;
+width:50%;
+border:none;
+color:#000;
+font-size:16px;
+border-radius:10px;
+box-sizing:border-box;
+} body::before{font-size:80px;}}
 /* Стили для выбранного товара */
 .product.selected {
   border: 3px solid #FFD700; /* золотая рамка для выделения */
@@ -307,6 +322,23 @@ margin-top:5px;
 .order-btn{
 background:#90ee90;
 color:black;
+transition: background 0.25s ease, color 0.25s ease, transform 0.18s ease, box-shadow 0.25s ease;
+}
+
+.order-btn.added{
+background:#ff3b30;
+color:#fff;
+box-shadow:0 0 12px rgba(255,59,48,0.45);
+}
+
+.order-btn.bump{
+animation:cartBtnPulse 0.35s ease;
+}
+
+@keyframes cartBtnPulse{
+0%{transform:scale(1);}
+50%{transform:scale(1.08);}
+100%{transform:scale(1);}
 }
 
 .add-btn{
@@ -314,7 +346,7 @@ background:#2196F3;
 color:white;
 }
 
-.cart-modal-content{max-width:560px;width:94%;padding:20px;border-radius:18px;}
+.cart-modal-content{max-width:560px;width:94%;padding:95px 20px 20px;border-radius:18px;}
 .cart-header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;}
 .cart-items{display:flex;flex-direction:column;gap:10px;max-height:50vh;overflow-y:auto;margin:10px 0;}
 .cart-item{display:grid;grid-template-columns:64px 1fr auto;gap:10px;align-items:center;background:#0b0b0b;border:1px solid #2f5f2f;border-radius:14px;padding:10px;}
@@ -336,6 +368,369 @@ color:white;
 #orderSelectedBtn{position:fixed !important;}
 @media(max-width:600px){.checkout-grid{grid-template-columns:1fr;}.cart-item{grid-template-columns:56px 1fr;}.cart-qty{grid-column:1 / -1;justify-content:flex-start;}}
 
+
+/* MENU */
+#menuBtn{
+position:fixed;
+top:16px;
+left:16px;
+z-index:10060;
+width:54px;
+height:54px;
+border-radius:14px;
+background:linear-gradient(135deg,#90ee90,#6edc6e);
+color:#000;
+border:2px solid rgba(255,255,255,0.18);
+font-size:26px;
+font-weight:bold;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+box-shadow:0 8px 22px rgba(0,0,0,0.35);
+transition:transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+}
+
+#menuBtn:hover{
+transform:scale(1.06);
+box-shadow:0 10px 26px rgba(0,0,0,0.45);
+}
+
+#menuBtn.active{
+box-shadow:0 0 12px rgba(144,238,144,0.75), 0 0 24px rgba(144,238,144,0.55), 0 0 38px rgba(144,238,144,0.35);
+animation:menuGlow 1.3s ease-in-out infinite alternate;
+}
+
+@keyframes menuGlow{
+from{
+  transform:scale(1);
+  filter:brightness(1);
+}
+to{
+  transform:scale(1.05);
+  filter:brightness(1.08);
+}
+}
+
+#sideMenu{
+position:fixed;
+top:0;
+left:-260px;
+width:260px;
+height:100%;
+background:#111;
+color:#fff;
+z-index:10055;
+padding:95px 20px 20px;
+transition:0.3s;
+box-shadow:5px 0 20px rgba(0,0,0,0.5);
+}
+
+#sideMenu.open{
+left:0;
+}
+
+#menuOverlay{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.6);
+z-index:10050;
+display:none;
+}
+
+#menuOverlay.show{
+display:block;
+}
+
+
+.menu-link-btn,
+.menu-copy-btn,
+.menu-location-btn{
+display:block;
+width:100%;
+margin:10px 0;
+padding:12px 14px;
+border:none;
+border-radius:12px;
+text-align:left;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+text-decoration:none;
+box-sizing:border-box;
+}
+
+.menu-link-btn{
+background:#111;
+color:#fff;
+border:2px solid #90ee90;
+}
+
+.menu-copy-btn{
+background:#90ee90;
+color:#000;
+}
+
+.menu-location-btn{
+background:#333;
+color:#fff;
+}
+
+
+.submenu{
+display:none;
+margin-top:8px;
+margin-bottom:10px;
+padding-left:4px;
+}
+
+.submenu.open{
+display:block;
+}
+
+.submenu-toggle{
+display:block;
+width:100%;
+margin:10px 0 6px;
+padding:12px 14px;
+border:none;
+border-radius:12px;
+text-align:left;
+font-size:15px;
+font-weight:bold;
+cursor:pointer;
+background:#1b1b1b;
+color:#fff;
+border:1px solid #3b3b3b;
+}
+
+.owner-section{
+display:none;
+padding:4px 0 8px 10px;
+}
+
+.owner-section.open{
+display:block;
+}
+
+.owner-contact-btn,
+.owner-telegram-btn{
+display:block;
+width:100%;
+margin:8px 0;
+padding:11px 12px;
+border:none;
+border-radius:12px;
+text-align:left;
+font-size:14px;
+font-weight:bold;
+cursor:pointer;
+text-decoration:none;
+box-sizing:border-box;
+}
+
+.owner-contact-btn{
+background:#90ee90;
+color:#000;
+}
+
+.owner-telegram-btn{
+background:#229ED9;
+color:#fff;
+}
+
+
+
+.search-box{
+margin-top:-10px;
+}
+
+.search-wrapper{
+position:relative;
+width:100%;
+margin-top:-10px;
+}
+
+.search-wrapper input{
+width:100%;
+padding:14px 70px 14px 14px;
+font-size:16px;
+border-radius:14px;
+border:none;
+box-sizing:border-box;
+}
+
+.search-wrapper select {
+    position: absolute;
+    top: 43%;
+    right: 6px;
+    transform: translateY(-50%);
+    padding: 8px;
+    font-size: 14px;
+    width: 130px;
+    border-radius: 10px;
+    border: none;
+    background: #eee;
+}
+
+
+
+/* Registration */
+.auth-required-modal .modal-content{
+  max-width:360px;
+  border-radius:18px;
+}
+
+.register-btn{
+  background:#90ee90;
+  color:#000;
+}
+
+.menu-register-btn{
+  display:block;
+  width:100%;
+  margin:10px 0;
+  padding:12px 14px;
+  border:none;
+  border-radius:12px;
+  text-align:left;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  background:#90ee90;
+  color:#000;
+}
+
+#registerModal .modal-content{
+  max-width:420px;
+  border-radius:18px;
+}
+
+#registerModal input{
+  border-radius:12px;
+  padding:12px;
+  margin:8px 0;
+}
+
+#registerStatus{
+  font-size:13px;
+  color:#90ee90;
+  min-height:18px;
+  margin-top:8px;
+}
+
+#userBadge{
+  display:none;
+  margin:10px 0;
+  margin-bottom:8px;
+  padding:12px 14px;
+  border-radius:12px;
+  background:#1b1b1b;
+  color:#90ee90;
+  font-size:14px;
+  font-weight:bold;
+  border:1px solid #2f5f2f;
+  cursor:pointer;
+}
+
+
+/* auth + profile + history */
+#sideMenu{
+  display:flex;
+  flex-direction:column;
+}
+.menu-register-btn{
+  display:block;
+  width:100%;
+  margin:10px 0;
+  padding:12px 14px;
+  border:none;
+  border-radius:12px;
+  text-align:left;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  background:#90ee90;
+  color:#000;
+}
+#userBadge{
+  display:none;
+  margin:10px 0;
+  margin-bottom:8px;
+  padding:12px 14px;
+  border-radius:12px;
+  background:#1b1b1b;
+  color:#90ee90;
+  font-size:14px;
+  font-weight:bold;
+  border:1px solid #2f5f2f;
+  cursor:pointer;
+}
+#registerModal .modal-content,
+#loginModal .modal-content,
+#profileModal .modal-content,
+#confirmLogoutModal .modal-content,
+#authRequiredModal .modal-content,
+#orderHistoryModal .modal-content{
+  max-width:420px;
+  border-radius:18px;
+}
+#registerModal input,
+#loginModal input{
+  border-radius:12px;
+  padding:12px;
+  margin:8px 0;
+}
+#registerStatus,
+#loginStatus{
+  font-size:13px;
+  color:#90ee90;
+  min-height:18px;
+  margin-top:8px;
+}
+.register-btn{
+  background:#90ee90;
+  color:#000;
+}
+.auth-required-modal .modal-content{
+  max-width:360px;
+}
+.order-history-list{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  max-height:55vh;
+  overflow-y:auto;
+  margin-top:10px;
+}
+.order-history-item{
+  text-align:left;
+  padding:12px;
+  border:1px solid #2f5f2f;
+  border-radius:14px;
+  background:#0b0b0b;
+}
+.order-history-title{
+  font-size:15px;
+  font-weight:bold;
+  color:#fff;
+  margin-bottom:6px;
+}
+.order-history-meta{
+  font-size:13px;
+  color:#b8efb8;
+  margin-bottom:6px;
+}
+.order-history-products{
+  font-size:13px;
+  color:#fff;
+  line-height:1.45;
+}
+.order-history-empty{
+  color:#fff;
+  padding:20px 0;
+}
+
 </style>
 
 <!-- Кнопка кошика -->
@@ -345,15 +740,56 @@ color:white;
 </button>
 </head>
 <body>
+
+<button id="menuBtn" onclick="toggleMenu()">☰</button>
+
+
+<div id="sideMenu">
+<div id="userBadge" onclick="openProfileModal()">👤 Профіль</div>
+<button id="registerMenuBtn" class="menu-register-btn" onclick="openRegisterModal()">📝 Зареєструватися</button>
+<button id="loginMenuBtn" class="menu-register-btn" onclick="openLoginModal()">🔑 Увійти</button>
+<button class="menu-register-btn" onclick="openOrderHistoryModal()">📦 Історія замовлень</button>
+<a href="https://www.tiktok.com/@inst_asortiment?_r=1&_t=ZS-95VwGRTQxhV" target="_blank" rel="noopener" class="menu-link-btn">TikTok</a>
+
+<button class="menu-copy-btn" onclick="toggleOwnersMenu()">📞 Номери власників</button>
+
+<div id="ownersMenu" class="submenu">
+  <button class="submenu-toggle" onclick="toggleOwnerSection('shopOwnerSection')">Власник магазину</button>
+  <div id="shopOwnerSection" class="owner-section">
+    <button class="owner-contact-btn" onclick="copyPhone('0730510544')">📞 0730510544</button>
+    <a href="https://t.me/Neffoc" target="_blank" rel="noopener" class="owner-telegram-btn">Telegram: @Neffoc</a>
+  </div>
+
+  <button class="submenu-toggle" onclick="toggleOwnerSection('siteOwnerSection')">Власник сайту</button>
+  <div id="siteOwnerSection" class="owner-section">
+    <button class="owner-contact-btn" onclick="copyPhone('0632270785')">📞 0632270785</button>
+    <a href="https://t.me/Fushan90" target="_blank" rel="noopener" class="owner-telegram-btn">Telegram: @Fushan90</a>
+  </div>
+</div>
+
+<button class="menu-location-btn" onclick="showLocationSoon()">📍 Місцезнаходження магазину</button>
+
+<p id="copyMessage" style="font-size:13px;color:#90ee90;margin-top:14px;min-height:18px;"></p>
+</div>
+
+
+<div id="menuOverlay" onclick="toggleMenu()"></div>
+
 <div id="loader">
   <div class="spinner"></div>
 </div>
 
-<header>🛒 Inst asortiments</header>
+<header style="font-size:34px;font-weight:bold;padding:14px 0;margin-top:5px;">Inst asortiments</header>
 <div class="container">
   <div class="search-box">
-    <input type="text" id="searchInput" placeholder="Пошук товару..." onkeyup="handleSearch()">
-    <select id="categoryFilter" onchange="filterCategory()"><option value="">Всі категорії</option></select>
+    
+<div class="search-wrapper">
+  <input type="text" id="searchInput" placeholder="Пошук товару..." onkeyup="handleSearch()">
+  <select id="categoryFilter" onchange="filterCategory()">
+    <option value="">Категорії</option>
+  </select>
+</div>
+
   </div>
   <div style="text-align:center;">
     <button id="addProductBtn" style="display:none;" onclick="openAddModal()">Додати товар</button>
@@ -389,7 +825,7 @@ color:white;
 
     <div style="display:flex; gap:5px; margin-top:10px;">
       <button onclick="closeModal()">Назад</button>
-      <button onclick="addFromView()">Додати в замовлення</button>
+      <button id="modalOrderBtn" class="order-btn" onclick="addFromView()">Додати в замовлення</button>
       <button id="editProductBtn" onclick="editFromView()" style="display:none;">Редагувати</button>
     </div>
 
@@ -472,6 +908,113 @@ color:white;
   </div>
 </div>
 
+
+<div class="modal auth-required-modal" id="authRequiredModal">
+  <div class="modal-content">
+    <h3 style="margin-top:0;">Ви ще не зареєструвалися</h3>
+    <p style="color:#fff;">Щоб користуватися кошиком, спочатку потрібно зареєструватися.</p>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <button class="register-btn" onclick="openRegisterFromWarning()">Зареєструватися</button>
+      <button onclick="closeAuthRequiredModal()" style="background:#444;color:#fff;">Закрити</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="registerModal">
+  <div class="modal-content">
+    <h3 style="margin-top:0;">Реєстрація</h3>
+    <input type="text" id="registerName" placeholder="Ім'я">
+    <input type="email" id="registerEmail" placeholder="Електронна пошта">
+    <input type="password" id="registerPassword" placeholder="Придумайте пароль">
+    <div id="registerStatus"></div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <button class="register-btn" onclick="registerUser()">Зареєструватися</button>
+      <button onclick="closeRegisterModal()" style="background:#444;color:#fff;">Скасувати</button>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="modal" id="loginModal">
+  <div class="modal-content">
+    <h3 style="margin-top:0;">Вхід</h3>
+    <input type="email" id="loginEmail" placeholder="Електронна пошта">
+    <input type="password" id="loginPassword" placeholder="Пароль">
+    <div id="loginStatus" style="font-size:13px;color:#90ee90;min-height:18px;margin-top:8px;"></div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <button class="register-btn" onclick="loginUser()">Увійти</button>
+      <button onclick="closeLoginModal()" style="background:#444;color:#fff;">Скасувати</button>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal auth-required-modal" id="authRequiredModal">
+  <div class="modal-content">
+    <h3 style="margin-top:0;">Ви ще не зареєструвалися</h3>
+    <p style="color:#fff;">Щоб користуватися кошиком, спочатку потрібно зареєструватися.</p>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <button class="register-btn" onclick="openRegisterFromWarning()">Зареєструватися</button>
+      <button onclick="closeAuthRequiredModal()" style="background:#444;color:#fff;">Закрити</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="registerModal">
+  <div class="modal-content">
+    <h3 style="margin-top:0;">Реєстрація</h3>
+    <input type="text" id="registerName" placeholder="Ім'я">
+    <input type="email" id="registerEmail" placeholder="Електронна пошта">
+    <input type="password" id="registerPassword" placeholder="Придумайте пароль">
+    <div id="registerStatus"></div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <button class="register-btn" onclick="registerUser()">Зареєструватися</button>
+      <button onclick="closeRegisterModal()" style="background:#444;color:#fff;">Скасувати</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="loginModal">
+  <div class="modal-content">
+    <h3 style="margin-top:0;">Вхід</h3>
+    <input type="email" id="loginEmail" placeholder="Електронна пошта">
+    <input type="password" id="loginPassword" placeholder="Пароль">
+    <div id="loginStatus"></div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+      <button class="register-btn" onclick="loginUser()">Увійти</button>
+      <button onclick="closeLoginModal()" style="background:#444;color:#fff;">Скасувати</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="profileModal">
+  <div class="modal-content">
+    <h3 style="margin-top:0;">Профіль</h3>
+    <button onclick="confirmLogout()" style="background:#ff3b30;color:#fff;">Вийти</button>
+    <button onclick="closeProfileModal()" style="background:#444;color:#fff;margin-top:8px;">Закрити</button>
+  </div>
+</div>
+
+<div class="modal" id="confirmLogoutModal">
+  <div class="modal-content">
+    <h3 style="margin-top:0;">Ви впевнені?</h3>
+    <button onclick="logoutUser()" style="background:#ff3b30;color:#fff;">Вийти</button>
+    <button onclick="closeConfirmLogout()" style="background:#444;color:#fff;margin-top:8px;">Скасувати</button>
+  </div>
+</div>
+
+<div class="modal" id="orderHistoryModal">
+  <div class="modal-content">
+    <h3 style="margin-top:0;">Історія замовлень</h3>
+    <div id="orderHistoryList" class="order-history-list"></div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;">
+      <button onclick="clearOrderHistory()" style="background:#444;color:#fff;">Очистити історію</button>
+      <button onclick="closeOrderHistoryModal()" style="background:#90ee90;color:#000;">Закрити</button>
+    </div>
+  </div>
+</div>
+
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -479,6 +1022,315 @@ color:white;
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 
 <script>
+
+const USER_STORAGE_KEY = 'inst_asortiments_user';
+const LOGIN_STORAGE_KEY = 'inst_asortiments_logged_in';
+const ORDER_HISTORY_KEY = 'inst_asortiments_order_history';
+
+function toggleMenu(){
+  const menu = document.getElementById('sideMenu');
+  const overlay = document.getElementById('menuOverlay');
+  const btn = document.getElementById('menuBtn');
+  if(menu) menu.classList.toggle('open');
+  if(overlay) overlay.classList.toggle('show');
+  if(btn) btn.classList.toggle('active');
+}
+
+function copyPhone(phone){
+  const message = document.getElementById('copyMessage');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(phone).then(() => {
+      if(message) message.innerText = 'Номер скопійовано: ' + phone;
+    }).catch(() => fallbackCopyPhone(phone, message));
+  } else {
+    fallbackCopyPhone(phone, message);
+  }
+}
+
+function fallbackCopyPhone(phone, message){
+  const tempInput = document.createElement('input');
+  tempInput.value = phone;
+  document.body.appendChild(tempInput);
+  tempInput.select();
+  document.execCommand('copy');
+  document.body.removeChild(tempInput);
+  if(message) message.innerText = 'Номер скопійовано: ' + phone;
+}
+
+function showLocationSoon(){
+  const message = document.getElementById('copyMessage');
+  if(message) message.innerText = 'Геолокацію магазину буде додано пізніше.';
+}
+
+function toggleOwnersMenu(){
+  const menu = document.getElementById('ownersMenu');
+  if(menu) menu.classList.toggle('open');
+}
+
+function toggleOwnerSection(id){
+  const section = document.getElementById(id);
+  if(section) section.classList.toggle('open');
+}
+
+function getRegisteredUser(){
+  try{
+    const raw = localStorage.getItem(USER_STORAGE_KEY);
+    if(!raw) return null;
+    const user = JSON.parse(raw);
+    if(user && user.name && user.email && user.password) return user;
+    return null;
+  }catch(error){
+    return null;
+  }
+}
+
+function isUserLoggedIn(){
+  return localStorage.getItem(LOGIN_STORAGE_KEY) === 'true';
+}
+
+
+function updateAuthMenuButtons(){
+  const registerBtn = document.getElementById('registerMenuBtn');
+  const loginBtn = document.getElementById('loginMenuBtn');
+  const loggedIn = isUserLoggedIn();
+
+  if(registerBtn) registerBtn.style.display = loggedIn ? 'none' : 'block';
+  if(loginBtn) loginBtn.style.display = loggedIn ? 'none' : 'block';
+}
+
+function updateUserBadge(){
+  const badge = document.getElementById('userBadge');
+  const user = getRegisteredUser();
+  updateAuthMenuButtons();
+  if(!badge) return;
+
+  if(user && isUserLoggedIn()){
+    badge.style.display = 'block';
+    badge.textContent = '👤 ' + user.name;
+  }else{
+    badge.style.display = 'none';
+    badge.textContent = '👤 Профіль';
+  }
+}
+
+function openRegisterModal(){
+  const el = document.getElementById('registerModal');
+  if(el){
+    el.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+  }
+}
+
+function closeRegisterModal(){
+  const el = document.getElementById('registerModal');
+  if(el){
+    el.style.display = 'none';
+    document.body.classList.remove('no-scroll');
+  }
+}
+
+function openLoginModal(){
+  const el = document.getElementById('loginModal');
+  if(el){
+    el.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+  }
+}
+
+function closeLoginModal(){
+  const el = document.getElementById('loginModal');
+  if(el){
+    el.style.display = 'none';
+    document.body.classList.remove('no-scroll');
+  }
+}
+
+function openProfileModal(){
+  if(!isUserLoggedIn()) return;
+  const el = document.getElementById('profileModal');
+  if(el){
+    el.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+  }
+}
+
+function closeProfileModal(){
+  const el = document.getElementById('profileModal');
+  if(el){
+    el.style.display = 'none';
+    document.body.classList.remove('no-scroll');
+  }
+}
+
+function confirmLogout(){
+  closeProfileModal();
+  const el = document.getElementById('confirmLogoutModal');
+  if(el){
+    el.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+  }
+}
+
+function closeConfirmLogout(){
+  const el = document.getElementById('confirmLogoutModal');
+  if(el){
+    el.style.display = 'none';
+    document.body.classList.remove('no-scroll');
+  }
+}
+
+function logoutUser(){
+  localStorage.removeItem(LOGIN_STORAGE_KEY);
+  closeConfirmLogout();
+  updateUserBadge();
+}
+
+function openAuthRequiredModal(){
+  const el = document.getElementById('authRequiredModal');
+  if(el){
+    el.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+  }
+}
+
+function closeAuthRequiredModal(){
+  const el = document.getElementById('authRequiredModal');
+  if(el){
+    el.style.display = 'none';
+    document.body.classList.remove('no-scroll');
+  }
+}
+
+function openRegisterFromWarning(){
+  closeAuthRequiredModal();
+  openRegisterModal();
+}
+
+function registerUser(){
+  const name = document.getElementById('registerName').value.trim();
+  const email = document.getElementById('registerEmail').value.trim();
+  const password = document.getElementById('registerPassword').value.trim();
+  const status = document.getElementById('registerStatus');
+
+  if(!name || !email || !password){
+    if(status) status.textContent = 'Заповніть всі поля.';
+    return;
+  }
+
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if(!emailOk){
+    if(status) status.textContent = 'Введіть коректну електронну пошту.';
+    return;
+  }
+
+  if(password.length < 4){
+    if(status) status.textContent = 'Пароль має містити щонайменше 4 символи.';
+    return;
+  }
+
+  localStorage.setItem(USER_STORAGE_KEY, JSON.stringify({ name, email, password }));
+  localStorage.setItem(LOGIN_STORAGE_KEY, 'true');
+  if(status) status.textContent = 'Реєстрація успішна!';
+  updateUserBadge();
+  setTimeout(() => closeRegisterModal(), 300);
+}
+
+function loginUser(){
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+  const status = document.getElementById('loginStatus');
+  const user = getRegisteredUser();
+
+  if(!user){
+    status.textContent = 'Користувач не знайдений.';
+    return;
+  }
+
+  if(user.email !== email || user.password !== password){
+    status.textContent = 'Невірна пошта або пароль.';
+    return;
+  }
+
+  localStorage.setItem(LOGIN_STORAGE_KEY, 'true');
+  status.textContent = 'Вхід успішний!';
+  updateUserBadge();
+  setTimeout(() => closeLoginModal(), 300);
+}
+
+function requireRegistration(){
+  if(isUserLoggedIn()) return true;
+  openAuthRequiredModal();
+  return false;
+}
+
+function getOrderHistory(){
+  try{
+    const raw = localStorage.getItem(ORDER_HISTORY_KEY);
+    if(!raw) return [];
+    const data = JSON.parse(raw);
+    return Array.isArray(data) ? data : [];
+  }catch(error){
+    return [];
+  }
+}
+
+function saveOrderToHistory(orderData){
+  const history = getOrderHistory();
+  history.unshift(orderData);
+  localStorage.setItem(ORDER_HISTORY_KEY, JSON.stringify(history.slice(0, 50)));
+}
+
+function renderOrderHistory(){
+  const container = document.getElementById('orderHistoryList');
+  if(!container) return;
+  const history = getOrderHistory();
+
+  if(!history.length){
+    container.innerHTML = '<div class="order-history-empty">Історія замовлень порожня</div>';
+    return;
+  }
+
+  container.innerHTML = history.map(order => {
+    const products = (order.items || []).map(item => {
+      const qty = Number(item.quantity) || 1;
+      return `${item.title} × ${qty}`;
+    }).join('<br>');
+    return `
+      <div class="order-history-item">
+        <div class="order-history-title">Замовлення від ${order.dateText || ''}</div>
+        <div class="order-history-meta">
+          ${order.customerName ? 'Ім’я: ' + order.customerName + '<br>' : ''}
+          ${order.customerPhone ? 'Телефон: ' + order.customerPhone + '<br>' : ''}
+          ${order.totalText ? 'Сума: ' + order.totalText : ''}
+        </div>
+        <div class="order-history-products">${products || 'Без товарів'}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openOrderHistoryModal(){
+  renderOrderHistory();
+  const el = document.getElementById('orderHistoryModal');
+  if(el){
+    el.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+  }
+}
+
+function closeOrderHistoryModal(){
+  const el = document.getElementById('orderHistoryModal');
+  if(el){
+    el.style.display = 'none';
+    document.body.classList.remove('no-scroll');
+  }
+}
+
+function clearOrderHistory(){
+  localStorage.removeItem(ORDER_HISTORY_KEY);
+  renderOrderHistory();
+}
+
 // Firebase конфігурація
 const firebaseConfig = {
   apiKey: "AIzaSyCPEYu_S1qn9dwCkh22QzyX4-hB4_ecM0A",
@@ -515,6 +1367,17 @@ function createLeaf(){
 }
 setInterval(createLeaf,500);
 
+  function openCart() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    if (cart.length === 0) {
+      alert("Ви ще нічого не обрали");
+      return;
+    }
+
+    console.log("Відкриваємо корзину");
+  }
+  
 // Магазин
 let adminMode=false;
 let editingId=null;
@@ -565,6 +1428,7 @@ function populateCategorySelects(){
 }
 
 function orderProduct(id){
+  if(!requireRegistration()) return;
   addToCart(id);
   showAddedToCart();
 }
@@ -654,6 +1518,7 @@ function openViewModal(id){
 
   document.getElementById("viewModal").style.display = "flex";
   document.body.classList.add("no-scroll"); 
+  updateModalOrderButton();
 }
 
 function editFromView(){
@@ -662,7 +1527,10 @@ function editFromView(){
 }
 
 function addFromView(){
+  if(!requireRegistration()) return;
+  const btn = document.getElementById('modalOrderBtn');
   toggleSelectProduct(currentProductId);
+  animateOrderButton(btn);
 }
 
 function nextImage(){
@@ -829,6 +1697,7 @@ function saveProductData(title, price, desc, category, images){
 const CART_STORAGE_KEY = 'inst_asortiments_cart';
 let selectedProducts = loadCartFromStorage();
 updateSelectedUI();
+updateUserBadge();
 
 function loadCartFromStorage(){
   try {
@@ -894,12 +1763,28 @@ function removeFromCart(id, rerenderCart = false) {
 }
 
 function toggleSelectProduct(id) {
-  const existing = selectedProducts.find(x => String(x.id) === String(id));
+  if(!requireRegistration()) return;
+const existing = selectedProducts.find(x => String(x.id) === String(id));
   if(existing){
     removeFromCart(id);
   } else {
     addToCart(id);
   }
+}
+
+function animateOrderButton(button){
+  if(!button) return;
+  button.classList.remove('bump');
+  void button.offsetWidth;
+  button.classList.add('bump');
+}
+
+function updateModalOrderButton(){
+  const btn = document.getElementById('modalOrderBtn');
+  if(!btn || currentProductId === null || currentProductId === undefined) return;
+  const inCart = selectedProducts.some(item => String(item.id) === String(currentProductId));
+  btn.textContent = inCart ? '✔ Прибрати' : 'Додати в замовлення';
+  btn.classList.toggle('added', inCart);
 }
 
 // обновление кнопки и счетчика выбранных
@@ -913,7 +1798,15 @@ function updateSelectedUI() {
     const cardId = card.dataset.id;
     const inCart = selectedProducts.some(item => String(item.id) === String(cardId));
     card.classList.toggle('selected', inCart);
+
+    const orderBtn = card.querySelector('.order-btn');
+    if(orderBtn){
+      orderBtn.textContent = inCart ? '✔ Прибрати' : 'Додати в замовлення';
+      orderBtn.classList.toggle('added', inCart);
+    }
   });
+
+  updateModalOrderButton();
 
   if(document.getElementById('cartModal')?.style.display === 'flex'){
     renderCartModal();
@@ -935,6 +1828,7 @@ function formatPrice(value){
 }
 
 function openCartModal(){
+  if(!requireRegistration()) return;
   if(selectedProducts.length === 0) return alert('Кошик порожній');
   renderCartModal();
   document.getElementById('cartModal').style.display = 'flex';
@@ -954,7 +1848,7 @@ function renderCartModal(){
   if(!cartItems) return;
 
   if(selectedProducts.length === 0){
-    cartItems.innerHTML = '<div style="text-align:center;padding:20px;color:#fff;">Кошик порожній</div>';
+    cartItems.innerHTML = '<div style="text-align:center;padding:95px 20px 20px;color:#fff;">Кошик порожній</div>';
     countEl.innerText = '0';
     totalEl.innerText = '0 грн';
     return;
@@ -1011,6 +1905,7 @@ function clearCart(){
 }
 
 function openCheckoutModal(){
+  if(!requireRegistration()) return;
   if(selectedProducts.length === 0) return alert('Кошик порожній');
   document.getElementById('checkoutModal').style.display = 'flex';
 }
@@ -1084,6 +1979,19 @@ async function copyTextSafe(text){
 }
 
 async function submitOrder(channel){
+
+  const totalsForHistory = typeof getCartTotals === 'function' ? getCartTotals() : { total: 0 };
+  saveOrderToHistory({
+    dateText: new Date().toLocaleString('uk-UA'),
+    customerName: document.getElementById('customerName')?.value?.trim() || '',
+    customerPhone: document.getElementById('customerPhone')?.value?.trim() || '',
+    totalText: typeof formatPrice === 'function' ? formatPrice(totalsForHistory.total) : (totalsForHistory.total + ' грн'),
+    items: (selectedProducts || []).map(item => ({
+      title: item.title,
+      quantity: Number(item.quantity) || 1
+    }))
+  });
+
   const message = buildOrderMessage(channel);
   if(!message) return;
 
@@ -1127,7 +2035,7 @@ function renderProducts(list = products){
    <p>${p.price} грн</p>
 
    <div class="card-buttons">
-     <button class="order-btn">У кошик</button>
+     <button class="order-btn ${inCart ? 'added' : ''}">${inCart ? '✔ Прибрати' : 'Додати в замовлення'}</button>
      <button class="add-btn">Швидке замовлення</button>
      ${adminMode ? `<button class="edit-btn">Редагувати</button>` : ""}
    </div>
@@ -1147,6 +2055,7 @@ function renderProducts(list = products){
     orderBtn.addEventListener('click', (e)=>{
       e.stopPropagation();
       orderProduct(p.id);
+      animateOrderButton(orderBtn);
     });
 
     // кнопка додати в замовлення
@@ -1186,6 +2095,52 @@ document.getElementById('cartModal').addEventListener('click', function(e){
 document.getElementById('checkoutModal').addEventListener('click', function(e){
   if(e.target.id === 'checkoutModal') closeCheckoutModal();
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function isUserRegistered(){
+  return !!getRegisteredUser();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </script>
 
@@ -1348,6 +2303,214 @@ async function uploadImagesToFirebase(files){
   }
 
   return urls;
+}
+
+
+function toggleMenu(){
+  const menu = document.getElementById('sideMenu');
+  const overlay = document.getElementById('menuOverlay');
+  const btn = document.getElementById('menuBtn');
+
+  menu.classList.toggle('open');
+  overlay.classList.toggle('show');
+  btn.classList.toggle('active');
+}
+
+
+function copyPhone(phone){
+  const message = document.getElementById('copyMessage');
+
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(phone).then(() => {
+      if(message) message.innerText = 'Номер скопійовано: ' + phone;
+    }).catch(() => {
+      fallbackCopyPhone(phone, message);
+    });
+  } else {
+    fallbackCopyPhone(phone, message);
+  }
+}
+
+function fallbackCopyPhone(phone, message){
+  const tempInput = document.createElement('input');
+  tempInput.value = phone;
+  document.body.appendChild(tempInput);
+  tempInput.select();
+  document.execCommand('copy');
+  document.body.removeChild(tempInput);
+  if(message) message.innerText = 'Номер скопійовано: ' + phone;
+}
+
+function showLocationSoon(){
+  const message = document.getElementById('copyMessage');
+  if(message) message.innerText = 'Геолокацію магазину буде додано пізніше.';
+}
+
+
+function toggleOwnersMenu(){
+  const menu = document.getElementById('ownersMenu');
+  if(menu) menu.classList.toggle('open');
+}
+
+function toggleOwnerSection(id){
+  const section = document.getElementById(id);
+  if(section) section.classList.toggle('open');
+}
+
+
+const USER_STORAGE_KEY = 'inst_asortiments_user';
+
+function getRegisteredUser(){
+  try{
+    const raw = localStorage.getItem(USER_STORAGE_KEY);
+    if(!raw) return null;
+    const user = JSON.parse(raw);
+    if(user && user.name && user.email && user.password) return user;
+    return null;
+  }catch(error){
+    console.error('Не вдалося прочитати реєстрацію', error);
+    return null;
+  }
+}
+
+function isUserRegistered(){
+  return !!getRegisteredUser();
+}
+
+
+function updateAuthMenuButtons(){
+  const registerBtn = document.getElementById('registerMenuBtn');
+  const loginBtn = document.getElementById('loginMenuBtn');
+  const loggedIn = isUserLoggedIn();
+
+  if(registerBtn) registerBtn.style.display = loggedIn ? 'none' : 'block';
+  if(loginBtn) loginBtn.style.display = loggedIn ? 'none' : 'block';
+}
+
+function updateUserBadge(){
+  const badge = document.getElementById('userBadge');
+  const user = getRegisteredUser();
+  if(!badge) return;
+
+  if(user){
+    badge.style.display = 'block';
+    badge.textContent = '👤 ' + user.name;
+  }else{
+    badge.style.display = 'none';
+    badge.textContent = '';
+  }
+}
+
+function openRegisterModal(){
+  const el = document.getElementById('registerModal');
+  if(el){
+    el.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+  }
+}
+
+function closeRegisterModal(){
+  const el = document.getElementById('registerModal');
+  if(el){
+    el.style.display = 'none';
+    document.body.classList.remove('no-scroll');
+  }
+}
+
+function openAuthRequiredModal(){
+  const el = document.getElementById('authRequiredModal');
+  if(el){
+    el.style.display = 'flex';
+    document.body.classList.add('no-scroll');
+  }
+}
+
+function closeAuthRequiredModal(){
+  const el = document.getElementById('authRequiredModal');
+  if(el){
+    el.style.display = 'none';
+    document.body.classList.remove('no-scroll');
+  }
+}
+
+function openRegisterFromWarning(){
+  closeAuthRequiredModal();
+  openRegisterModal();
+}
+
+function registerUser(){
+  const name = document.getElementById('registerName').value.trim();
+  const email = document.getElementById('registerEmail').value.trim();
+  const password = document.getElementById('registerPassword').value.trim();
+  const status = document.getElementById('registerStatus');
+
+  if(!name || !email || !password){
+    if(status) status.textContent = 'Заповніть всі поля.';
+    return;
+  }
+
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  if(!emailOk){
+    if(status) status.textContent = 'Введіть коректну електронну пошту.';
+    return;
+  }
+
+  if(password.length < 4){
+    if(status) status.textContent = 'Пароль має містити щонайменше 4 символи.';
+    return;
+  }
+
+  try{
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify({ name, email, password }));
+    if(status) status.textContent = 'Реєстрація успішна!';
+    updateUserBadge();
+    setTimeout(() => {
+      closeRegisterModal();
+    }, 350);
+  }catch(error){
+    console.error('Не вдалося зберегти реєстрацію', error);
+    if(status) status.textContent = 'Сталася помилка при збереженні.';
+  }
+}
+
+function requireRegistration(){
+  if(isUserRegistered()) return true;
+  openAuthRequiredModal();
+  return false;
+}
+
+
+function openLoginModal(){
+  document.getElementById('loginModal').style.display = 'flex';
+  document.body.classList.add('no-scroll');
+}
+
+function closeLoginModal(){
+  document.getElementById('loginModal').style.display = 'none';
+  document.body.classList.remove('no-scroll');
+}
+
+function loginUser(){
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value.trim();
+  const status = document.getElementById('loginStatus');
+
+  const user = getRegisteredUser();
+
+  if(!user){
+    status.textContent = 'Користувач не знайдений.';
+    return;
+  }
+
+  if(user.email !== email || user.password !== password){
+    status.textContent = 'Невірна пошта або пароль.';
+    return;
+  }
+
+  status.textContent = 'Вхід успішний!';
+  setTimeout(() => {
+    closeLoginModal();
+  }, 300);
 }
 
 </script>
