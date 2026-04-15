@@ -1724,13 +1724,23 @@ function saveProductData(title, price, desc, category, images){
 
 /// масив товарів у кошику
 const CART_STORAGE_KEY = 'inst_asortiments_cart';
+
+function getCartStorageKey(){
+  try{
+    if(typeof getRegisteredUser === 'function'){
+      const user = getRegisteredUser();
+      if(user && (user.uid || user.email)) return CART_STORAGE_KEY + '_' + (user.uid || user.email);
+    }
+  }catch(error){}
+  return CART_STORAGE_KEY + '_guest';
+}
 let selectedProducts = loadCartFromStorage();
 updateSelectedUI();
 updateUserBadge();
 
 function loadCartFromStorage(){
   try {
-    const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+    const savedCart = localStorage.getItem(getCartStorageKey());
     if(!savedCart) return [];
     const parsed = JSON.parse(savedCart);
     return Array.isArray(parsed) ? parsed : [];
@@ -1742,9 +1752,19 @@ function loadCartFromStorage(){
 
 function saveCartToStorage(){
   try {
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(selectedProducts));
+    localStorage.setItem(getCartStorageKey(), JSON.stringify(selectedProducts));
   } catch (error) {
     console.error('Не вдалося зберегти кошик', error);
+  }
+}
+
+
+function reloadCartForCurrentUser(){
+  selectedProducts = loadCartFromStorage();
+  if(typeof syncCartWithProducts === 'function'){
+    syncCartWithProducts();
+  }else{
+    updateSelectedUI();
   }
 }
 
@@ -2679,6 +2699,7 @@ function loginUser(){
       setText('registerStatus', 'Реєстрація успішна!');
       currentFirebaseUser = cred.user;
       updateUserBadge();
+      if(typeof reloadCartForCurrentUser === 'function') reloadCartForCurrentUser();
       setTimeout(() => closeIfExists('closeRegisterModal'), 300);
     }catch(error){
       console.error(error);
@@ -2712,6 +2733,7 @@ function loginUser(){
       currentFirebaseUser = cred.user;
       setText('loginStatus', 'Вхід успішний!');
       updateUserBadge();
+      if(typeof reloadCartForCurrentUser === 'function') reloadCartForCurrentUser();
       setTimeout(() => closeIfExists('closeLoginModal'), 300);
     }catch(error){
       console.error(error);
@@ -2741,6 +2763,7 @@ function loginUser(){
       const cred = await auth.signInWithPopup(provider);
       currentFirebaseUser = cred.user;
       await saveFirebaseProfile(cred.user);
+      if(typeof reloadCartForCurrentUser === 'function') reloadCartForCurrentUser();
       setText('loginStatus', 'Вхід через Google успішний!');
       setText('registerStatus', 'Google-реєстрація успішна!');
       updateUserBadge();
@@ -2766,6 +2789,7 @@ function loginUser(){
     currentFirebaseUser = null;
     if(typeof closeConfirmLogout === 'function') closeConfirmLogout();
     updateUserBadge();
+    if(typeof reloadCartForCurrentUser === 'function') reloadCartForCurrentUser();
   };
 
   window.requireRegistration = function(){
@@ -2814,6 +2838,7 @@ function loginUser(){
       }
       patchOrderHistoryForFirebaseUser();
       await updateUserBadge();
+      if(typeof reloadCartForCurrentUser === 'function') reloadCartForCurrentUser();
     });
   }
 
