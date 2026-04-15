@@ -731,6 +731,30 @@ box-sizing:border-box;
   padding:20px 0;
 }
 
+
+.google-auth-btn{
+  background:#fff;
+  color:#111;
+  border:1px solid #ddd;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+}
+.google-auth-btn:hover{
+  background:#f5f5f5;
+}
+.google-icon{
+  font-weight:bold;
+  font-size:18px;
+}
+.password-hint{
+  font-size:12px;
+  color:#b8efb8;
+  margin-top:4px;
+  text-align:left;
+}
+
 </style>
 
 <!-- Кнопка кошика -->
@@ -863,7 +887,7 @@ box-sizing:border-box;
 </div>
 
 
-<div class="modal" id="cartModal">
+<div class="modal" id="cartModal" onclick="handleModalBackdrop(event, 'cartModal', closeCartModal)">
   <div class="modal-content cart-modal-content">
     <div class="cart-header">
       <h3 style="margin:0;">🛒 Кошик</h3>
@@ -920,15 +944,17 @@ box-sizing:border-box;
   </div>
 </div>
 
-<div class="modal" id="registerModal">
+<div class="modal" id="registerModal" onclick="handleModalBackdrop(event, 'registerModal', closeRegisterModal)">
   <div class="modal-content">
     <h3 style="margin-top:0;">Реєстрація</h3>
     <input type="text" id="registerName" placeholder="Ім'я">
     <input type="email" id="registerEmail" placeholder="Електронна пошта">
-    <input type="password" id="registerPassword" placeholder="Придумайте пароль">
+    <input type="password" id="registerPassword" placeholder="Створіть надійний пароль">
+    <div class="password-hint">Мінімум 8 символів, велика літера і цифра.</div>
     <div id="registerStatus"></div>
     <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
       <button class="register-btn" onclick="registerUser()">Зареєструватися</button>
+      <button class="google-auth-btn" onclick="signInWithGoogle()"><span class="google-icon">G</span> Продовжити через Google</button>
       <button onclick="closeRegisterModal()" style="background:#444;color:#fff;">Скасувати</button>
     </div>
   </div>
@@ -936,7 +962,7 @@ box-sizing:border-box;
 
 
 
-<div class="modal" id="loginModal">
+<div class="modal" id="loginModal" onclick="handleModalBackdrop(event, 'loginModal', closeLoginModal)">
   <div class="modal-content">
     <h3 style="margin-top:0;">Вхід</h3>
     <input type="email" id="loginEmail" placeholder="Електронна пошта">
@@ -944,6 +970,7 @@ box-sizing:border-box;
     <div id="loginStatus" style="font-size:13px;color:#90ee90;min-height:18px;margin-top:8px;"></div>
     <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
       <button class="register-btn" onclick="loginUser()">Увійти</button>
+      <button class="google-auth-btn" onclick="signInWithGoogle()"><span class="google-icon">G</span> Увійти через Google</button>
       <button onclick="closeLoginModal()" style="background:#444;color:#fff;">Скасувати</button>
     </div>
   </div>
@@ -961,12 +988,13 @@ box-sizing:border-box;
   </div>
 </div>
 
-<div class="modal" id="registerModal">
+<div class="modal" id="registerModal" onclick="handleModalBackdrop(event, 'registerModal', closeRegisterModal)">
   <div class="modal-content">
     <h3 style="margin-top:0;">Реєстрація</h3>
     <input type="text" id="registerName" placeholder="Ім'я">
     <input type="email" id="registerEmail" placeholder="Електронна пошта">
-    <input type="password" id="registerPassword" placeholder="Придумайте пароль">
+    <input type="password" id="registerPassword" placeholder="Створіть надійний пароль">
+    <div class="password-hint">Мінімум 8 символів, велика літера і цифра.</div>
     <div id="registerStatus"></div>
     <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
       <button class="register-btn" onclick="registerUser()">Зареєструватися</button>
@@ -975,7 +1003,7 @@ box-sizing:border-box;
   </div>
 </div>
 
-<div class="modal" id="loginModal">
+<div class="modal" id="loginModal" onclick="handleModalBackdrop(event, 'loginModal', closeLoginModal)">
   <div class="modal-content">
     <h3 style="margin-top:0;">Вхід</h3>
     <input type="email" id="loginEmail" placeholder="Електронна пошта">
@@ -1020,6 +1048,7 @@ box-sizing:border-box;
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
 <script>
 
@@ -2514,5 +2543,298 @@ function loginUser(){
 }
 
 </script>
+
+<script>
+(function(){
+  if (window.__firebaseAuthPatched) return;
+  window.__firebaseAuthPatched = true;
+
+  let authInstance = null;
+  let currentFirebaseUser = null;
+
+  function getAuthSafe(){
+    try{
+      if(!authInstance){
+        authInstance = firebase.auth();
+      }
+      return authInstance;
+    }catch(error){
+      console.error('Firebase Auth не ініціалізовано', error);
+      return null;
+    }
+  }
+
+  function setText(id, text){
+    const el = document.getElementById(id);
+    if(el) el.textContent = text || '';
+  }
+
+  async function saveFirebaseProfile(user, fallbackName){
+    if(!user) return;
+    const name = user.displayName || fallbackName || (user.email ? user.email.split('@')[0] : 'Користувач');
+    try{
+      await db.ref('users/' + user.uid + '/profile').update({
+        name,
+        email: user.email || '',
+        updatedAt: firebase.database.ServerValue.TIMESTAMP
+      });
+    }catch(error){
+      console.error('Не вдалося зберегти профіль', error);
+    }
+  }
+
+  async function loadUserProfile(uid){
+    try{
+      const snap = await db.ref('users/' + uid + '/profile').get();
+      return snap.exists() ? (snap.val() || {}) : {};
+    }catch(error){
+      console.error('Не вдалося завантажити профіль', error);
+      return {};
+    }
+  }
+
+  function closeIfExists(fnName){
+    if(typeof window[fnName] === 'function'){
+      window[fnName]();
+    }
+  }
+
+  function isStrongPassword(password){
+    return /^(?=.*[A-ZА-ЯІЇЄҐ])(?=.*\d).{8,}$/.test(password);
+  }
+
+  window.isUserLoggedIn = function(){
+    return !!currentFirebaseUser;
+  };
+
+  window.getRegisteredUser = function(){
+    if(!currentFirebaseUser) return null;
+    return {
+      uid: currentFirebaseUser.uid,
+      email: currentFirebaseUser.email || '',
+      name: currentFirebaseUser.displayName || ''
+    };
+  };
+
+  window.updateAuthMenuButtons = function(){
+    const registerBtn = document.getElementById('registerMenuBtn');
+    const loginBtn = document.getElementById('loginMenuBtn');
+    const loggedIn = !!currentFirebaseUser;
+    if(registerBtn) registerBtn.style.display = loggedIn ? 'none' : 'block';
+    if(loginBtn) loginBtn.style.display = loggedIn ? 'none' : 'block';
+  };
+
+  window.updateUserBadge = async function(){
+    const badge = document.getElementById('userBadge');
+    updateAuthMenuButtons();
+    if(!badge) return;
+
+    if(currentFirebaseUser){
+      const profile = await loadUserProfile(currentFirebaseUser.uid);
+      const name = profile.name || currentFirebaseUser.displayName || currentFirebaseUser.email || 'Користувач';
+      badge.style.display = 'block';
+      badge.textContent = '👤 ' + name;
+    }else{
+      badge.style.display = 'none';
+      badge.textContent = '👤 Профіль';
+    }
+  };
+
+  window.registerUser = async function(){
+    const name = document.getElementById('registerName')?.value.trim() || '';
+    const email = document.getElementById('registerEmail')?.value.trim() || '';
+    const password = document.getElementById('registerPassword')?.value.trim() || '';
+
+    if(!name || !email || !password){
+      setText('registerStatus', 'Заповніть всі поля.');
+      return;
+    }
+
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if(!emailOk){
+      setText('registerStatus', 'Введіть коректну електронну пошту.');
+      return;
+    }
+
+    if(!isStrongPassword(password)){
+      setText('registerStatus', 'Пароль: мінімум 8 символів, 1 велика літера і 1 цифра.');
+      return;
+    }
+
+    const auth = getAuthSafe();
+    if(!auth){
+      setText('registerStatus', 'Помилка ініціалізації Firebase Auth.');
+      return;
+    }
+
+    try{
+      const cred = await auth.createUserWithEmailAndPassword(email, password);
+      await cred.user.updateProfile({ displayName: name });
+      await db.ref('users/' + cred.user.uid + '/profile').set({
+        name,
+        email,
+        provider: 'password',
+        createdAt: firebase.database.ServerValue.TIMESTAMP
+      });
+      setText('registerStatus', 'Реєстрація успішна!');
+      currentFirebaseUser = cred.user;
+      updateUserBadge();
+      setTimeout(() => closeIfExists('closeRegisterModal'), 300);
+    }catch(error){
+      console.error(error);
+      const map = {
+        'auth/email-already-in-use': 'Ця пошта вже використовується.',
+        'auth/invalid-email': 'Невірна електронна пошта.',
+        'auth/weak-password': 'Слабкий пароль.',
+        'auth/operation-not-allowed': 'У Firebase не увімкнений Email/Password вхід.'
+      };
+      setText('registerStatus', map[error.code] || error.message || 'Помилка реєстрації.');
+    }
+  };
+
+  window.loginUser = async function(){
+    const email = document.getElementById('loginEmail')?.value.trim() || '';
+    const password = document.getElementById('loginPassword')?.value.trim() || '';
+
+    if(!email || !password){
+      setText('loginStatus', 'Заповніть всі поля.');
+      return;
+    }
+
+    const auth = getAuthSafe();
+    if(!auth){
+      setText('loginStatus', 'Помилка ініціалізації Firebase Auth.');
+      return;
+    }
+
+    try{
+      const cred = await auth.signInWithEmailAndPassword(email, password);
+      currentFirebaseUser = cred.user;
+      setText('loginStatus', 'Вхід успішний!');
+      updateUserBadge();
+      setTimeout(() => closeIfExists('closeLoginModal'), 300);
+    }catch(error){
+      console.error(error);
+      const map = {
+        'auth/invalid-email': 'Невірна електронна пошта.',
+        'auth/user-not-found': 'Користувача не знайдено.',
+        'auth/wrong-password': 'Невірний пароль.',
+        'auth/invalid-credential': 'Невірна пошта або пароль.',
+        'auth/too-many-requests': 'Забагато спроб. Спробуйте пізніше.',
+        'auth/operation-not-allowed': 'У Firebase не увімкнений Email/Password вхід.'
+      };
+      setText('loginStatus', map[error.code] || error.message || 'Помилка входу.');
+    }
+  };
+
+  window.signInWithGoogle = async function(){
+    const auth = getAuthSafe();
+    if(!auth){
+      setText('loginStatus', 'Помилка ініціалізації Firebase Auth.');
+      setText('registerStatus', 'Помилка ініціалізації Firebase Auth.');
+      return;
+    }
+
+    try{
+      const provider = new firebase.auth.GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: 'select_account' });
+      const cred = await auth.signInWithPopup(provider);
+      currentFirebaseUser = cred.user;
+      await saveFirebaseProfile(cred.user);
+      setText('loginStatus', 'Вхід через Google успішний!');
+      setText('registerStatus', 'Google-реєстрація успішна!');
+      updateUserBadge();
+      closeIfExists('closeLoginModal');
+      closeIfExists('closeRegisterModal');
+    }catch(error){
+      console.error(error);
+      const msg = error.code === 'auth/operation-not-allowed'
+        ? 'У Firebase не увімкнений Google Sign-In.'
+        : (error.message || 'Помилка входу через Google.');
+      setText('loginStatus', msg);
+      setText('registerStatus', msg);
+    }
+  };
+
+  window.logoutUser = async function(){
+    const auth = getAuthSafe();
+    try{
+      if(auth) await auth.signOut();
+    }catch(error){
+      console.error('Помилка виходу', error);
+    }
+    currentFirebaseUser = null;
+    if(typeof closeConfirmLogout === 'function') closeConfirmLogout();
+    updateUserBadge();
+  };
+
+  window.requireRegistration = function(){
+    if(currentFirebaseUser) return true;
+    if(typeof openAuthRequiredModal === 'function') openAuthRequiredModal();
+    return false;
+  };
+
+  function patchOrderHistoryForFirebaseUser(){
+    if(typeof getOrderHistory !== 'function' || typeof saveOrderToHistory !== 'function') return;
+
+    window.getOrderHistory = function(){
+      try{
+        if(!currentFirebaseUser) return [];
+        const raw = localStorage.getItem('inst_asortiments_order_history_' + currentFirebaseUser.uid);
+        if(!raw) return [];
+        const data = JSON.parse(raw);
+        return Array.isArray(data) ? data : [];
+      }catch(error){
+        return [];
+      }
+    };
+
+    window.saveOrderToHistory = function(orderData){
+      try{
+        if(!currentFirebaseUser) return;
+        const key = 'inst_asortiments_order_history_' + currentFirebaseUser.uid;
+        const raw = localStorage.getItem(key);
+        const history = raw ? JSON.parse(raw) : [];
+        history.unshift(orderData);
+        localStorage.setItem(key, JSON.stringify(history.slice(0, 50)));
+      }catch(error){
+        console.error('Помилка збереження історії', error);
+      }
+    };
+  }
+
+  function initAuthState(){
+    const auth = getAuthSafe();
+    if(!auth) return;
+
+    auth.onAuthStateChanged(async (user) => {
+      currentFirebaseUser = user || null;
+      if(currentFirebaseUser){
+        await saveFirebaseProfile(currentFirebaseUser);
+      }
+      patchOrderHistoryForFirebaseUser();
+      await updateUserBadge();
+    });
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initAuthState);
+  }else{
+    initAuthState();
+  }
+})();
+</script>
+
+
+<script>
+function handleModalBackdrop(event, modalId, closeFn){
+  const modal = document.getElementById(modalId);
+  if(!modal) return;
+  if(event.target === modal && typeof closeFn === 'function'){
+    closeFn();
+  }
+}
+</script>
+
 </body>
 </html>
