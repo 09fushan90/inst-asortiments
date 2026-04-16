@@ -99,7 +99,7 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 gap:10px;
-margin:0 0 20px 0;
+margin:-120px 0 20px 0;
 }
 .search-box input{
 padding:12px;
@@ -759,20 +759,23 @@ box-sizing:border-box;
 /* Top main categories */
 .top-main-categories{
   display:flex;
-  flex-wrap:wrap;
+  flex-direction:column;
   gap:10px;
-  justify-content:center;
-  margin:6px 0 14px 0;
+  margin:0 0 10px 0;
+  padding:10px;
 }
 .top-main-category-btn{
-  padding:10px 16px;
+  width:80%;
+  padding:14px;
   border:none;
-  border-radius:999px;
+  border-radius:12px;
   background:#1b1b1b;
   color:#90ee90;
   border:1px solid #2f5f2f;
   font-weight:bold;
   cursor:pointer;
+  text-align:left;
+  margin:0 auto;
 }
 .top-main-category-btn.active{
   background:#90ee90;
@@ -828,8 +831,8 @@ box-sizing:border-box;
 </div>
 
 <header style="font-size:34px;font-weight:bold;padding:14px 0;margin-top:5px;">Inst asortiments</header>
+<div id="topMainCategories" class="top-main-categories"></div>
 <div class="container">
-  <div id="topMainCategories" class="top-main-categories"></div>
   <div class="search-box">
     
 <div class="search-wrapper">
@@ -1542,9 +1545,9 @@ function showAddedToCart(){
 function renderMainCategories(){
   const container = document.getElementById('topMainCategories');
   if(!container) return;
-  const items = ['Усі', ...mainCategories];
+  const items = [...mainCategories];
   container.innerHTML = items.map(cat => {
-    const value = cat === 'Усі' ? '' : cat;
+    const value = cat;
     const active = currentMainCategoryFilter === value ? 'active' : '';
     return `<button class="top-main-category-btn ${active}" onclick='setMainCategoryFilter(${JSON.stringify("")})'></button>`;
   }).join('');
@@ -1558,7 +1561,11 @@ function renderMainCategories(){
 }
 
 function setMainCategoryFilter(category){
-  currentMainCategoryFilter = category || '';
+  if(currentMainCategoryFilter === category){
+    currentMainCategoryFilter = '';
+  } else {
+    currentMainCategoryFilter = category;
+  }
   renderMainCategories();
   applyAllFilters();
 }
