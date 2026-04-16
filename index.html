@@ -302,7 +302,7 @@ overflow: hidden;
 .product img {
 width: 100%;
 height: 100%;
-object-fit: cover;
+object-fit: contain; background:#fff; padding:10px; border-radius:10px;
 }
 
 /* Компьютер */
@@ -755,6 +755,29 @@ box-sizing:border-box;
   text-align:left;
 }
 
+
+/* Top main categories */
+.top-main-categories{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:center;
+  margin:6px 0 14px 0;
+}
+.top-main-category-btn{
+  padding:10px 16px;
+  border:none;
+  border-radius:999px;
+  background:#1b1b1b;
+  color:#90ee90;
+  border:1px solid #2f5f2f;
+  font-weight:bold;
+  cursor:pointer;
+}
+.top-main-category-btn.active{
+  background:#90ee90;
+  color:#000;
+}
 </style>
 
 <!-- Кнопка кошика -->
@@ -772,6 +795,7 @@ box-sizing:border-box;
 <div id="userBadge" onclick="openProfileModal()">👤 Профіль</div>
 <button id="registerMenuBtn" class="menu-register-btn" onclick="openRegisterModal()">📝 Зареєструватися</button>
 <button id="loginMenuBtn" class="menu-register-btn" onclick="openLoginModal()">🔑 Увійти</button>
+<button id="officeMenuBtn" class="menu-register-btn" onclick="openOffice()" style="display:none;">🏢 Офіс</button>
 <button class="menu-register-btn" onclick="openOrderHistoryModal()">📦 Історія замовлень</button>
 <a href="https://www.tiktok.com/@inst_asortiment?_r=1&_t=ZS-95VwGRTQxhV" target="_blank" rel="noopener" class="menu-link-btn">TikTok</a>
 
@@ -805,6 +829,7 @@ box-sizing:border-box;
 
 <header style="font-size:34px;font-weight:bold;padding:14px 0;margin-top:5px;">Inst asortiments</header>
 <div class="container">
+  <div id="topMainCategories" class="top-main-categories"></div>
   <div class="search-box">
     
 <div class="search-wrapper">
@@ -818,6 +843,7 @@ box-sizing:border-box;
   <div style="text-align:center;">
     <button id="addProductBtn" style="display:none;" onclick="openAddModal()">Додати товар</button>
     <button id="manageCategoriesBtn" style="display:none;" onclick="openCategoryModal()">Категорії</button>
+    <button id="manageMainCategoriesBtn" style="display:none;" onclick="openMainCategoryModal()">Осн. категорії</button>
   </div>
   <div class="products" id="products"></div>
 </div>
@@ -870,9 +896,20 @@ box-sizing:border-box;
    <textarea id="editImageUrl" placeholder="Вставте URL фото (кожне з нового рядка)"></textarea>
 <button onclick="addImageFromUrl()">Додати фото по URL</button>
     <select id="editCategory"></select>
+    <select id="editMainCategory"><option value="">Додати в осн. категорію</option></select>
     <button onclick="saveProduct()">Зберегти</button>
     <button onclick="closeEditModal()">Скасувати</button>
     <button id="deleteBtn" onclick="deleteProduct()" style="background:red;color:white;display:none;margin-top:5px;">Видалити</button>
+  </div>
+</div>
+
+<div class="modal" id="mainCategoryModal">
+  <div class="modal-content">
+    <h3>Основні категорії</h3>
+    <div id="mainCategoryList"></div>
+    <input type="text" id="newMainCategory" placeholder="Назва основної категорії">
+    <button onclick="addMainCategory()">Додати</button>
+    <button onclick="closeMainCategoryModal()">Скасувати</button>
   </div>
 </div>
 
@@ -1415,6 +1452,18 @@ let categories = [];
 let currentProductId = null;
 let currentImages = [];
 let currentIndex = 0;
+let mainCategories = [];
+let currentMainCategoryFilter = '';
+
+function isAdminUser(){
+  try{
+    if(typeof getRegisteredUser === 'function'){
+      const user = getRegisteredUser();
+      return !!(user && user.email && user.email.toLowerCase() === '09fushan90@gmail.com');
+    }
+  }catch(error){}
+  return false;
+}
 
 // Слухаємо Firebase
 async function loadData(){
@@ -1425,7 +1474,11 @@ async function loadData(){
   const categoriesSnap = await db.ref("categories").get();
   categories = categoriesSnap.val() || [];
 
+  const mainCategoriesSnap = await db.ref("mainCategories").get();
+  mainCategories = mainCategoriesSnap.val() || [];
+
   populateCategorySelects();
+  renderMainCategories();
   syncCartWithProducts();
   renderProducts();
 
@@ -1437,6 +1490,7 @@ loadData();
 function saveToDatabase(){
   db.ref('products').set(products);
   db.ref('categories').set(categories);
+  db.ref('mainCategories').set(mainCategories);
 }
 function hideLoader(){
   document.getElementById("loader").classList.add("hide");
@@ -1447,13 +1501,21 @@ function hideLoader(){
 function populateCategorySelects(){
   const editCat=document.getElementById("editCategory");
   const filterCat=document.getElementById("categoryFilter");
+  const editMainCat=document.getElementById("editMainCategory");
   editCat.innerHTML="<option value=''>Без категорії</option>";
-  filterCat.innerHTML="<option value=''>Всі категорії</option>";
+  filterCat.innerHTML="<option value=''>Категорії</option>";
+  if(editMainCat) editMainCat.innerHTML="<option value=''>Додати в осн. категорію</option>";
   categories.forEach(cat=>{
     editCat.innerHTML+=`<option value="${cat}">${cat}</option>`;
     filterCat.innerHTML+=`<option value="${cat}">${cat}</option>`;
   });
+  if(editMainCat){
+    mainCategories.forEach(cat=>{
+      editMainCat.innerHTML+=`<option value="${cat}">${cat}</option>`;
+    });
+  }
   populateCategoryList();
+  populateMainCategoryList();
 }
 
 function orderProduct(id){
@@ -1477,26 +1539,118 @@ function showAddedToCart(){
 }
 
 
+function renderMainCategories(){
+  const container = document.getElementById('topMainCategories');
+  if(!container) return;
+  const items = ['Усі', ...mainCategories];
+  container.innerHTML = items.map(cat => {
+    const value = cat === 'Усі' ? '' : cat;
+    const active = currentMainCategoryFilter === value ? 'active' : '';
+    return `<button class="top-main-category-btn ${active}" onclick='setMainCategoryFilter(${JSON.stringify("")})'></button>`;
+  }).join('');
+  const buttons = container.querySelectorAll('.top-main-category-btn');
+  buttons.forEach((btn, idx) => {
+    const label = items[idx];
+    const value = label === 'Усі' ? '' : label;
+    btn.textContent = label;
+    btn.onclick = () => setMainCategoryFilter(value);
+  });
+}
+
+function setMainCategoryFilter(category){
+  currentMainCategoryFilter = category || '';
+  renderMainCategories();
+  applyAllFilters();
+}
+
+function applyAllFilters(){
+  const searchValue=(document.getElementById("searchInput")?.value || "").toLowerCase();
+  const subCategory=document.getElementById("categoryFilter")?.value || "";
+  let filtered=[...products];
+  if(currentMainCategoryFilter){
+    filtered = filtered.filter(p => (p.mainCategory || "") === currentMainCategoryFilter);
+  }
+  if(subCategory){
+    filtered = filtered.filter(p => (p.category || "") === subCategory);
+  }
+  if(searchValue){
+    filtered = filtered.filter(p => (p.title || "").toLowerCase().includes(searchValue));
+  }
+  renderProducts(filtered);
+}
+
+function openMainCategoryModal(){
+  if(!isAdminUser()) return;
+  document.getElementById("mainCategoryModal").style.display="flex";
+}
+function closeMainCategoryModal(){
+  document.getElementById("mainCategoryModal").style.display="none";
+}
+function populateMainCategoryList(){
+  let list=document.getElementById("mainCategoryList");
+  if(!list) return;
+  list.innerHTML="";
+  mainCategories.forEach(cat=>{
+    list.innerHTML += `<div>${cat} <button onclick='removeMainCategory(${JSON.stringify("")})'></button></div>`;
+  });
+  Array.from(list.querySelectorAll('button')).forEach((btn, idx) => {
+    btn.textContent = 'Видалити';
+    btn.onclick = () => removeMainCategory(mainCategories[idx]);
+  });
+}
+function addMainCategory(){
+  if(!isAdminUser()) return;
+  let cat=(document.getElementById("newMainCategory").value || "").trim();
+  if(!cat) return;
+  if(!mainCategories.includes(cat)) mainCategories.push(cat);
+  document.getElementById("newMainCategory").value="";
+  saveToDatabase();
+  populateCategorySelects();
+  renderMainCategories();
+}
+function removeMainCategory(cat){
+  if(!isAdminUser()) return;
+  if(confirm(`Видалити основну категорію "${cat}"?`)){
+    mainCategories = mainCategories.filter(c => c !== cat);
+    products.forEach(p => { if(p.mainCategory === cat) p.mainCategory = ""; });
+    saveToDatabase();
+    populateCategorySelects();
+    renderMainCategories();
+    applyAllFilters();
+  }
+}
+function openOffice(){
+  if(!isAdminUser()) return;
+  adminMode=true;
+  document.getElementById("addProductBtn").style.display="inline-block";
+  document.getElementById("manageCategoriesBtn").style.display="inline-block";
+  document.getElementById("manageMainCategoriesBtn").style.display="inline-block";
+  renderProducts();
+  if(typeof toggleMenu === "function") toggleMenu();
+}
+
 function handleSearch(){
   let value=document.getElementById("searchInput").value.toLowerCase();
-  if(value==="0990"){
+  if(value==="0990" && isAdminUser()){
     adminMode=true;
     document.getElementById("addProductBtn").style.display="inline-block";
     document.getElementById("manageCategoriesBtn").style.display="inline-block";
+    document.getElementById("manageMainCategoriesBtn").style.display="inline-block";
     renderProducts();
     return;
+  }
+  if(value==="0990" && !isAdminUser()){
+    document.getElementById("searchInput").value="";
   }
   adminMode=false;
   document.getElementById("addProductBtn").style.display="none";
   document.getElementById("manageCategoriesBtn").style.display="none";
-  let filtered=products.filter(p=>p.title.toLowerCase().includes(value));
-  renderProducts(filtered);
+  document.getElementById("manageMainCategoriesBtn").style.display="none";
+  applyAllFilters();
 }
 
 function filterCategory(){
-  const cat=document.getElementById("categoryFilter").value;
-  if(!cat){renderProducts(); return;}
-  renderProducts(products.filter(p=>p.category===cat));
+  applyAllFilters();
 }
 
 function closeModal(){
@@ -1504,19 +1658,64 @@ function closeModal(){
   document.getElementById("fullscreenViewer").style.display = "none";
   document.body.classList.remove("no-scroll");
 }
-function openAddModal(){editingId=null;document.getElementById("editTitleText").innerText="Додати товар";document.getElementById("editTitle").value="";document.getElementById("editPrice").value="";document.getElementById("editImageFile").value="";document.getElementById("editDesc").value="";document.getElementById("editCategory").value="";document.getElementById("deleteBtn").style.display="none";document.getElementById("editModal").style.display="flex";}
-function openEditModal(id){let p=products.find(x=>x.id===id);editingId=id;document.getElementById("editTitleText").innerText="Редагувати товар";document.getElementById("editTitle").value=p.title;document.getElementById("editPrice").value=p.price;document.getElementById("editDesc").value=p.desc;document.getElementById("editCategory").value=p.category||"";document.getElementById("editImageFile").value="";document.getElementById("deleteBtn").style.display="block";document.getElementById("editModal").style.display="flex";}
+function openAddModal(){editingId=null;document.getElementById("editTitleText").innerText="Додати товар";document.getElementById("editTitle").value="";document.getElementById("editPrice").value="";document.getElementById("editImageFile").value="";document.getElementById("editDesc").value="";document.getElementById("editCategory").value="";
+  if(document.getElementById("editMainCategory")) document.getElementById("editMainCategory").value="";document.getElementById("deleteBtn").style.display="none";document.getElementById("editModal").style.display="flex";}
+function openEditModal(id){let p=products.find(x=>x.id===id);editingId=id;document.getElementById("editTitleText").innerText="Редагувати товар";document.getElementById("editTitle").value=p.title;document.getElementById("editPrice").value=p.price;document.getElementById("editDesc").value=p.desc;document.getElementById("editCategory").value=p.category||"";
+  if(document.getElementById("editMainCategory")) document.getElementById("editMainCategory").value=p.mainCategory||"";document.getElementById("editImageFile").value="";document.getElementById("deleteBtn").style.display="block";document.getElementById("editModal").style.display="flex";}
 function closeEditModal(){document.getElementById("editModal").style.display="none";}
-function saveProduct(){let title=document.getElementById("editTitle").value;let price=document.getElementById("editPrice").value;let desc=document.getElementById("editDesc").value;let category=document.getElementById("editCategory").value;let fileInput=document.getElementById("editImageFile");if(!title||!price||!desc)return alert("Заповніть всі поля");if(fileInput.files && fileInput.files[0]){let reader=new FileReader();reader.onload=function(e){saveProductData(title,price,desc,category,e.target.result);};reader.readAsDataURL(fileInput.files[0]);}else{let existingImage=null;if(editingId){existingImage=products.find(x=>x.id===editingId).image;}saveProductData(title,price,desc,category,existingImage);}}
-function saveProductData(title,price,desc,category,image){if(editingId){let p=products.find(x=>x.id===editingId);p.title=title;p.price=price;p.desc=desc;p.category=category;p.image=image;}else{products.push({id:Date.now(),title,price,desc,image,category});}saveToDatabase();closeEditModal();renderProducts();}
+function saveProduct(){
+  let title = document.getElementById("editTitle").value;
+  let price = document.getElementById("editPrice").value;
+  let desc = document.getElementById("editDesc").value;
+  let category = document.getElementById("editCategory").value;
+  let mainCategory = document.getElementById("editMainCategory") ? document.getElementById("editMainCategory").value : "";
+  let imageUrl = document.getElementById("editImageUrl").value
+    .split("\n")
+    .map(x => x.trim())
+    .filter(x => x);
+
+  if(!title || !price || !desc) return alert("Заповніть всі поля");
+
+  let images = tempImages.length > 0
+    ? [...tempImages]
+    : imageUrl.length > 0
+      ? imageUrl
+      : (editingId ? products.find(x=>x.id===editingId).image : []);
+
+  saveProductData(title, price, desc, category, mainCategory, images);
+}
+function saveProductData(title, price, desc, category, mainCategory, images){
+  if(editingId){
+    let p = products.find(x => x.id === editingId);
+    p.title = title;
+    p.price = price;
+    p.desc = desc;
+    p.category = category;
+    p.mainCategory = mainCategory || "";
+    p.image = Array.isArray(images) ? images : [images];
+  } else {
+    products.push({
+      id: Date.now(),
+      title,
+      price,
+      desc,
+      category,
+      mainCategory: mainCategory || "",
+      image: Array.isArray(images) ? images : [images]
+    });
+  }
+  saveToDatabase();
+  closeEditModal();
+  applyAllFilters();
+}
 function deleteProduct(){if(editingId){if(confirm("Ви впевнені, що хочете видалити цей товар?")){products=products.filter(p=>p.id!==editingId);saveToDatabase();renderProducts();closeEditModal();}}}
 
 // Категорії
-function openCategoryModal(){document.getElementById("categoryModal").style.display="flex";}
+function openCategoryModal(){if(!isAdminUser()) return; document.getElementById("categoryModal").style.display="flex";}
 function closeCategoryModal(){document.getElementById("categoryModal").style.display="none";}
 function populateCategoryList(){let list=document.getElementById("categoryList");list.innerHTML="";categories.forEach(cat=>{list.innerHTML+=`<div>${cat} <button onclick="removeCategory('${cat}')">Видалити</button></div>`;});}
-function addCategory(){let cat=document.getElementById("newCategory").value.trim();if(!cat)return;if(!categories.includes(cat))categories.push(cat);document.getElementById("newCategory").value="";saveToDatabase();}
-function removeCategory(cat){if(confirm(`Видалити категорію "${cat}"? Всі товари залишаться без категорії.`)){categories=categories.filter(c=>c!==cat);products.forEach(p=>{if(p.category===cat)p.category="";});saveToDatabase();}}
+function addCategory(){if(!isAdminUser()) return; let cat=document.getElementById("newCategory").value.trim();if(!cat)return;if(!categories.includes(cat))categories.push(cat);document.getElementById("newCategory").value="";saveToDatabase(); populateCategorySelects();}
+function removeCategory(cat){if(!isAdminUser()) return; if(confirm(`Видалити категорію "${cat}"? Всі товари залишаться без категорії.`)){categories=categories.filter(c=>c!==cat);products.forEach(p=>{if(p.category===cat)p.category="";});saveToDatabase(); populateCategorySelects(); applyAllFilters();}}
 
 populateCategorySelects();
 renderProducts();
@@ -1681,6 +1880,7 @@ function saveProduct(){
   let price = document.getElementById("editPrice").value;
   let desc = document.getElementById("editDesc").value;
   let category = document.getElementById("editCategory").value;
+  let mainCategory = document.getElementById("editMainCategory") ? document.getElementById("editMainCategory").value : "";
 
   let imageUrl = document.getElementById("editImageUrl").value
     .split("\n")
@@ -1695,17 +1895,18 @@ function saveProduct(){
       ? imageUrl 
       : (editingId ? products.find(x=>x.id===editingId).image : []);
 
-  saveProductData(title, price, desc, category, images);
+  saveProductData(title, price, desc, category, mainCategory, images);
 }
 
 // saveProductData с массивом изображений
-function saveProductData(title, price, desc, category, images){
+function saveProductData(title, price, desc, category, mainCategory, images){
   if(editingId){
     let p = products.find(x => x.id === editingId);
     p.title = title;
     p.price = price;
     p.desc = desc;
     p.category = category;
+    p.mainCategory = mainCategory || "";
     p.image = Array.isArray(images) ? images : [images];
   } else {
     products.push({
@@ -1714,6 +1915,7 @@ function saveProductData(title, price, desc, category, images){
       price,
       desc,
       category,
+      mainCategory: mainCategory || "",
       image: Array.isArray(images) ? images : [images]
     });
   }
@@ -2861,5 +3063,54 @@ function handleModalBackdrop(event, modalId, closeFn){
 }
 </script>
 
+<script>
+(function(){
+  function updateOfficeButton(){
+    const officeBtn=document.getElementById('officeMenuBtn');
+    if(!officeBtn) return;
+    officeBtn.style.display = (typeof isAdminUser === 'function' && isAdminUser()) ? 'block' : 'none';
+  }
+
+  const originalUpdateUserBadge = window.updateUserBadge;
+  if(typeof originalUpdateUserBadge === 'function'){
+    window.updateUserBadge = async function(){
+      const r = await originalUpdateUserBadge.apply(this, arguments);
+      updateOfficeButton();
+      return r;
+    };
+  }
+
+  const originalRenderProducts = window.renderProducts;
+  if(typeof originalRenderProducts === 'function'){
+    window.renderProducts = function(){
+      const r = originalRenderProducts.apply(this, arguments);
+      updateOfficeButton();
+      return r;
+    };
+  }
+
+  const originalOpenAddModal = window.openAddModal;
+  if(typeof originalOpenAddModal === 'function'){
+    window.openAddModal = function(){
+      if(typeof isAdminUser === 'function' && !isAdminUser()) return;
+      return originalOpenAddModal.apply(this, arguments);
+    };
+  }
+
+  const originalOpenEditModal = window.openEditModal;
+  if(typeof originalOpenEditModal === 'function'){
+    window.openEditModal = function(){
+      if(typeof isAdminUser === 'function' && !isAdminUser()) return;
+      return originalOpenEditModal.apply(this, arguments);
+    };
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', updateOfficeButton);
+  }else{
+    updateOfficeButton();
+  }
+})();
+</script>
 </body>
 </html>
