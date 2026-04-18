@@ -86,14 +86,16 @@ outline:none;
 border:none;
 }
 
-body.no-scroll {
-  overflow: hidden;
+html.no-scroll, body.no-scroll {
+  overflow: hidden !important;
   height: 100vh;
+  overscroll-behavior: none;
+  touch-action: none;
 }
 body {margin:0; font-family:Arial; background:#000; color:#90ee90; position:relative; min-height:100vh; overflow-x:hidden;}
 body::before {content:"Inst asortiments"; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); font-size:200px; color:rgba(144,238,144,0.05); font-weight:bold; white-space:nowrap; z-index:0; pointer-events:none;}
 header {background:#111; padding:95px 20px 20px; text-align:center; font-size:26px; position:relative; z-index:2;}
-.container {padding:95px 20px 20px; max-width:1300px; margin:auto; position:relative; z-index:2;}
+.container {padding:12px 20px 20px; max-width:1300px; margin:auto; position:relative; z-index:2;}
 .search-box {
 display:flex;
 justify-content:space-between;
@@ -185,6 +187,7 @@ background:rgba(0,0,0,0.85);
 justify-content:center;
 align-items:center;
 z-index:9999;
+overscroll-behavior:contain;
 }
 .modal-content{
   background:#111;
@@ -541,14 +544,19 @@ color:#fff;
 
 
 
+
 .search-box{
-margin-top:-10px;
+margin:0 0 8px 0;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
 }
 
 .search-wrapper{
 position:relative;
 width:100%;
-margin-top:-10px;
+margin-top:0;
 }
 
 .search-wrapper input{
@@ -745,8 +753,12 @@ box-sizing:border-box;
   background:#f5f5f5;
 }
 .google-icon{
-  font-weight:bold;
-  font-size:18px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:22px;
+  height:22px;
+  flex:0 0 22px;
 }
 .password-hint{
   font-size:12px;
@@ -756,13 +768,26 @@ box-sizing:border-box;
 }
 
 
+
+
+.fullscreen-viewer{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.96);justify-content:center;align-items:center;z-index:12000;overflow:hidden;touch-action:none;overscroll-behavior:none;}
+.fullscreen-image-wrap{position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;overflow:hidden;}
+.fullscreen-image{max-width:96vw;max-height:96vh;object-fit:contain;touch-action:none;cursor:grab;user-select:none;transform-origin:center center;will-change:transform;}
+.fullscreen-image.dragging{cursor:grabbing;}
+.fullscreen-close{position:absolute;top:18px;right:18px;font-size:34px;background:rgba(0,0,0,0.3);border:none;color:#fff;cursor:pointer;z-index:12001;padding:6px 12px;border-radius:12px;}
+.fullscreen-zoom-controls{position:absolute;right:18px;bottom:18px;display:flex;gap:10px;z-index:12001;}
+.fullscreen-zoom-btn{width:48px;height:48px;border-radius:14px;border:none;background:rgba(0,0,0,0.55);color:#fff;font-size:28px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.fullscreen-zoom-btn:hover{background:rgba(255,255,255,0.2);}
+.fullscreen-hint{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);color:#fff;background:rgba(0,0,0,0.4);padding:8px 12px;border-radius:999px;font-size:13px;z-index:12001;white-space:nowrap;}
+#viewModal, #fullscreenViewer{overscroll-behavior:contain;touch-action:none;}
+#viewModal .modal-content, #fullscreenViewer .fullscreen-image-wrap{touch-action:none;}
 /* Top main categories */
 .top-main-categories{
   display:flex;
   flex-direction:column;
-  gap:10px;
-  margin:0 0 10px 0;
-  padding:10px;
+  gap:8px;
+  margin:0;
+  padding:8px 10px 0;
 }
 .top-main-category-btn{
   width:80%;
@@ -781,6 +806,27 @@ box-sizing:border-box;
   background:#90ee90;
   color:#000;
 }
+
+#backToHomeBtn {
+  position: fixed;
+  top: 120px;
+  left: 15px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #1b1b1b;
+  color: #90ee90;
+  border: 1px solid #2f5f2f;
+  font-size: 22px;
+  font-weight:700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 9999;
+}
+
+
 </style>
 
 <!-- Кнопка кошика -->
@@ -833,13 +879,19 @@ box-sizing:border-box;
 <header style="font-size:34px;font-weight:bold;padding:14px 0;margin-top:5px;">Inst asortiments</header>
 <div id="topMainCategories" class="top-main-categories"></div>
 <div class="container">
-  <div class="search-box">
+  
+<div class="search-box">
     
 <div class="search-wrapper">
   <input type="text" id="searchInput" placeholder="Пошук товару..." onkeyup="handleSearch()">
   <select id="categoryFilter" onchange="filterCategory()">
     <option value="">Категорії</option>
   </select>
+</div>
+<div id="subCategoryBackWrap" style="display:none;text-align:left;margin:8px 0 0 0;">
+  <button id="subCategoryBackBtn" type="button" onclick="resetSubCategoryFilter()" style="display:flex;align-items:center;justify-content:center;width:50px;height:50px;border-radius:50%;background:#1b1b1b;color:#90ee90;border:1px solid #2f5f2f;font-size:22px;cursor:pointer;">
+    ←
+  </button>
 </div>
 
   </div>
@@ -994,7 +1046,7 @@ box-sizing:border-box;
     <div id="registerStatus"></div>
     <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
       <button class="register-btn" onclick="registerUser()">Зареєструватися</button>
-      <button class="google-auth-btn" onclick="signInWithGoogle()"><span class="google-icon">G</span> Продовжити через Google</button>
+      <button class="google-auth-btn" onclick="signInWithGoogle()"><span class="google-icon" aria-hidden="true"><svg viewBox="0 0 48 48" width="20" height="20"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.654 32.657 29.207 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.27 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.27 4 24 4c-7.682 0-14.347 4.337-17.694 10.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.197l-6.19-5.238C29.143 35.091 26.715 36 24 36c-5.186 0-9.625-3.329-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.05 12.05 0 0 1-4.084 5.565l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg></span> Продовжити через Google</button>
       <button onclick="closeRegisterModal()" style="background:#444;color:#fff;">Скасувати</button>
     </div>
   </div>
@@ -1010,7 +1062,7 @@ box-sizing:border-box;
     <div id="loginStatus" style="font-size:13px;color:#90ee90;min-height:18px;margin-top:8px;"></div>
     <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
       <button class="register-btn" onclick="loginUser()">Увійти</button>
-      <button class="google-auth-btn" onclick="signInWithGoogle()"><span class="google-icon">G</span> Увійти через Google</button>
+      <button class="google-auth-btn" onclick="signInWithGoogle()"><span class="google-icon" aria-hidden="true"><svg viewBox="0 0 48 48" width="20" height="20"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.654 32.657 29.207 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.27 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.27 4 24 4c-7.682 0-14.347 4.337-17.694 10.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.197l-6.19-5.238C29.143 35.091 26.715 36 24 36c-5.186 0-9.625-3.329-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.05 12.05 0 0 1-4.084 5.565l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg></span> Увійти через Google</button>
       <button onclick="closeLoginModal()" style="background:#444;color:#fff;">Скасувати</button>
     </div>
   </div>
@@ -1086,8 +1138,6 @@ box-sizing:border-box;
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-analytics-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
 <script>
@@ -1095,6 +1145,47 @@ box-sizing:border-box;
 const USER_STORAGE_KEY = 'inst_asortiments_user';
 const LOGIN_STORAGE_KEY = 'inst_asortiments_logged_in';
 const ORDER_HISTORY_KEY = 'inst_asortiments_order_history';
+let modalLockCount = 0;
+let pageLockScrollY = 0;
+let pageIsLocked = false;
+
+function lockPageScroll(){
+  if(pageIsLocked) return;
+  pageLockScrollY = window.scrollY || window.pageYOffset || 0;
+  pageIsLocked = true;
+  document.documentElement.classList.add('no-scroll');
+  document.body.classList.add('no-scroll');
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${pageLockScrollY}px`;
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.width = '100%';
+}
+
+function unlockPageScroll(){
+  if(!pageIsLocked) return;
+  pageIsLocked = false;
+  document.documentElement.classList.remove('no-scroll');
+  document.body.classList.remove('no-scroll');
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.width = '';
+  window.scrollTo(0, pageLockScrollY);
+}
+
+function openOverlayLock(){
+  modalLockCount += 1;
+  lockPageScroll();
+}
+
+function closeOverlayLock(){
+  modalLockCount = Math.max(0, modalLockCount - 1);
+  if(modalLockCount === 0){
+    unlockPageScroll();
+  }
+}
 
 function toggleMenu(){
   const menu = document.getElementById('sideMenu');
@@ -1414,9 +1505,88 @@ const firebaseConfig = {
 
 // Ініціалізація Firebase
 firebase.initializeApp(firebaseConfig);
-firebase.analytics();
 const db = firebase.database();
-const storage = firebase.storage();
+
+// Економний режим для Blaze: кеш каталогу в localStorage,
+// один вузол catalog замість трьох окремих читань і без analytics/storage.
+const CATALOG_CACHE_KEY = 'inst_asortiments_catalog_cache_v1';
+const CATALOG_CACHE_MAX_AGE = 1000 * 60 * 60 * 24; // 24 години
+
+function getCatalogPayload(){
+  return {
+    products: Array.isArray(products) ? products : [],
+    categories: Array.isArray(categories) ? categories : [],
+    mainCategories: Array.isArray(mainCategories) ? mainCategories : []
+  };
+}
+
+function saveCatalogToCache(payload){
+  try{
+    localStorage.setItem(CATALOG_CACHE_KEY, JSON.stringify({
+      savedAt: Date.now(),
+      data: {
+        products: Array.isArray(payload.products) ? payload.products : [],
+        categories: Array.isArray(payload.categories) ? payload.categories : [],
+        mainCategories: Array.isArray(payload.mainCategories) ? payload.mainCategories : []
+      }
+    }));
+  }catch(error){
+    console.warn('Не вдалося зберегти кеш каталогу', error);
+  }
+}
+
+function getCatalogFromCache(maxAge = CATALOG_CACHE_MAX_AGE){
+  try{
+    const raw = localStorage.getItem(CATALOG_CACHE_KEY);
+    if(!raw) return null;
+    const parsed = JSON.parse(raw);
+    if(!parsed || !parsed.data || typeof parsed.savedAt !== 'number') return null;
+    if(Date.now() - parsed.savedAt > maxAge) return null;
+    return parsed.data;
+  }catch(error){
+    return null;
+  }
+}
+
+function applyCatalogData(payload){
+  products = Array.isArray(payload?.products) ? payload.products : [];
+  categories = Array.isArray(payload?.categories) ? payload.categories : [];
+  mainCategories = Array.isArray(payload?.mainCategories) ? payload.mainCategories : [];
+}
+
+function renderCatalogUI(){
+  populateCategorySelects();
+  renderMainCategories();
+  updateSubCategoryBackButton();
+  syncCartWithProducts();
+  renderProducts();
+  hideLoader();
+}
+
+async function fetchCatalogFromDatabase(){
+  const catalogSnap = await db.ref('catalog').get();
+  if(catalogSnap.exists()){
+    const catalog = catalogSnap.val() || {};
+    return {
+      products: Array.isArray(catalog.products) ? catalog.products : [],
+      categories: Array.isArray(catalog.categories) ? catalog.categories : [],
+      mainCategories: Array.isArray(catalog.mainCategories) ? catalog.mainCategories : []
+    };
+  }
+
+  // Плавна міграція зі старої структури: читаємо один раз і далі пишемо в catalog.
+  const [productsSnap, categoriesSnap, mainCategoriesSnap] = await Promise.all([
+    db.ref('products').get(),
+    db.ref('categories').get(),
+    db.ref('mainCategories').get()
+  ]);
+
+  return {
+    products: productsSnap.val() || [],
+    categories: categoriesSnap.val() || [],
+    mainCategories: mainCategoriesSnap.val() || []
+  };
+}
 
 // Падаюче листя
 function createLeaf(){
@@ -1468,36 +1638,52 @@ function isAdminUser(){
   return false;
 }
 
-// Слухаємо Firebase
-async function loadData(){
+// Економне завантаження каталогу: спочатку кеш, потім база за потреби.
+async function loadData(forceRefresh = false){
+  const cachedCatalog = !forceRefresh ? getCatalogFromCache() : null;
 
-  const productsSnap = await db.ref("products").get();
-  products = productsSnap.val() || [];
+  if(cachedCatalog){
+    applyCatalogData(cachedCatalog);
+    renderCatalogUI();
+    return;
+  }
 
-  const categoriesSnap = await db.ref("categories").get();
-  categories = categoriesSnap.val() || [];
+  try{
+    const freshCatalog = await fetchCatalogFromDatabase();
+    applyCatalogData(freshCatalog);
+    saveCatalogToCache(freshCatalog);
+    renderCatalogUI();
+  }catch(error){
+    console.error('Помилка завантаження каталогу', error);
 
-  const mainCategoriesSnap = await db.ref("mainCategories").get();
-  mainCategories = mainCategoriesSnap.val() || [];
+    const fallbackCatalog = getCatalogFromCache(Number.MAX_SAFE_INTEGER);
+    if(fallbackCatalog){
+      applyCatalogData(fallbackCatalog);
+      renderCatalogUI();
+      return;
+    }
 
-  populateCategorySelects();
-  renderMainCategories();
-  syncCartWithProducts();
-  renderProducts();
-
-  hideLoader();
+    products = [];
+    categories = [];
+    mainCategories = [];
+    renderCatalogUI();
+  }
 }
 
 loadData();
 
 function saveToDatabase(){
-  db.ref('products').set(products);
-  db.ref('categories').set(categories);
-  db.ref('mainCategories').set(mainCategories);
+  const payload = getCatalogPayload();
+  saveCatalogToCache(payload);
+  return db.ref('catalog').set(payload);
 }
 function hideLoader(){
   document.getElementById("loader").classList.add("hide");
 }
+
+window.addEventListener('online', () => {
+  if(!getCatalogFromCache()) loadData(true);
+});
 
 
 // Категорії
@@ -1570,9 +1756,35 @@ function setMainCategoryFilter(category){
   applyAllFilters();
 }
 
+function updateSubCategoryBackButton(){
+  const wrap = document.getElementById("subCategoryBackWrap");
+  const select = document.getElementById("categoryFilter");
+  if(!wrap || !select) return;
+  wrap.style.display = select.value ? "flex" : "none";
+}
+
+function resetSubCategoryFilter(){
+  const select = document.getElementById("categoryFilter");
+  if(select) select.value = "";
+  updateSubCategoryBackButton();
+  applyAllFilters();
+}
+
+function goToHomeScreen(){
+  currentMainCategoryFilter = "";
+  const searchInput = document.getElementById("searchInput");
+  const categoryFilter = document.getElementById("categoryFilter");
+  if(searchInput) searchInput.value = "";
+  if(categoryFilter) categoryFilter.value = "";
+  updateSubCategoryBackButton();
+  renderMainCategories();
+  applyAllFilters();
+}
+
 function applyAllFilters(){
   const searchValue=(document.getElementById("searchInput")?.value || "").toLowerCase();
   const subCategory=document.getElementById("categoryFilter")?.value || "";
+  updateSubCategoryBackButton();
   let filtered=[...products];
   if(currentMainCategoryFilter){
     filtered = filtered.filter(p => (p.mainCategory || "") === currentMainCategoryFilter);
@@ -1628,10 +1840,24 @@ function removeMainCategory(cat){
 }
 function openOffice(){
   if(!isAdminUser()) return;
-  adminMode=true;
-  document.getElementById("addProductBtn").style.display="inline-block";
-  document.getElementById("manageCategoriesBtn").style.display="inline-block";
-  document.getElementById("manageMainCategoriesBtn").style.display="inline-block";
+
+  adminMode = !adminMode;
+
+  const addBtn = document.getElementById("addProductBtn");
+  const catBtn = document.getElementById("manageCategoriesBtn");
+  const mainCatBtn = document.getElementById("manageMainCategoriesBtn");
+
+  if(adminMode){
+    if(addBtn) addBtn.style.display="inline-block";
+    if(catBtn) catBtn.style.display="inline-block";
+    if(mainCatBtn) mainCatBtn.style.display="inline-block";
+  } else {
+    if(addBtn) addBtn.style.display="none";
+    if(catBtn) catBtn.style.display="none";
+    if(mainCatBtn) mainCatBtn.style.display="none";
+    goToHomeScreen();
+  }
+
   renderProducts();
   if(typeof toggleMenu === "function") toggleMenu();
 }
@@ -1663,7 +1889,7 @@ function filterCategory(){
 function closeModal(){
   document.getElementById("viewModal").style.display = "none";
   document.getElementById("fullscreenViewer").style.display = "none";
-  document.body.classList.remove("no-scroll");
+  closeOverlayLock();
 }
 function openAddModal(){editingId=null;document.getElementById("editTitleText").innerText="Додати товар";document.getElementById("editTitle").value="";document.getElementById("editPrice").value="";document.getElementById("editImageFile").value="";document.getElementById("editDesc").value="";document.getElementById("editCategory").value="";
   if(document.getElementById("editMainCategory")) document.getElementById("editMainCategory").value="";document.getElementById("deleteBtn").style.display="none";document.getElementById("editModal").style.display="flex";}
@@ -1725,6 +1951,7 @@ function addCategory(){if(!isAdminUser()) return; let cat=document.getElementByI
 function removeCategory(cat){if(!isAdminUser()) return; if(confirm(`Видалити категорію "${cat}"? Всі товари залишаться без категорії.`)){categories=categories.filter(c=>c!==cat);products.forEach(p=>{if(p.category===cat)p.category="";});saveToDatabase(); populateCategorySelects(); applyAllFilters();}}
 
 populateCategorySelects();
+updateSubCategoryBackButton();
 renderProducts();
 
 // Массив временных фото для редактирования
@@ -1752,7 +1979,7 @@ function openViewModal(id){
   document.getElementById("modalCategory").innerText = p.category ? "Категорія: " + p.category : "";
 
   document.getElementById("viewModal").style.display = "flex";
-  document.body.classList.add("no-scroll"); 
+  openOverlayLock(); 
   updateModalOrderButton();
 }
 
@@ -2402,165 +2629,226 @@ function isUserRegistered(){
 
 </script>
 
-<div id="fullscreenViewer" style="
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.95);
-justify-content:center;
-align-items:center;
-z-index:9999;
-">
-
-<img id="fullscreenImg" style="
-max-width:95%;
-max-height:95%;
-object-fit:contain;
-touch-action:none;
-cursor:zoom-in;
-">
-
-<button onclick="closeFullscreen()" style="
-position:absolute;
-top:20px;
-right:20px;
-font-size:35px;
-background:none;
-border:none;
-color:white;
-cursor:pointer;
-">
-✕
-</button>
-
+<div id="fullscreenViewer" class="fullscreen-viewer" onclick="handleFullscreenBackdrop(event)">
+  <button class="fullscreen-close" onclick="closeFullscreen()">✕</button>
+  <div class="fullscreen-image-wrap" id="fullscreenImageWrap">
+    <img id="fullscreenImg" class="fullscreen-image" alt="Збільшене фото товару">
+    <div class="fullscreen-hint">Коліщатко / pinch / подвійний дотик для зуму</div>
+    <div class="fullscreen-zoom-controls">
+      <button type="button" class="fullscreen-zoom-btn" onclick="zoomInImage(event)" aria-label="Збільшити">+</button>
+      <button type="button" class="fullscreen-zoom-btn" onclick="zoomOutImage(event)" aria-label="Зменшити">−</button>
+    </div>
+  </div>
 </div>
 
 <script>
-
-  let scale = 1;
+let scale = 1;
 let posX = 0;
 let posY = 0;
-
 let startX = 0;
 let startY = 0;
-
 let startDistance = 0;
 let startScale = 1;
-
+let isDraggingImage = false;
 const img = document.getElementById("fullscreenImg");
+const fullscreenViewer = document.getElementById("fullscreenViewer");
+const fullscreenImageWrap = document.getElementById("fullscreenImageWrap");
 
 function openFullscreen(src){
   img.src = src;
-
-  scale = 1;
-  posX = 0;
-  posY = 0;
-
-  updateTransform();
-
-  document.getElementById("fullscreenViewer").style.display = "flex";
+  fullscreenViewer.style.display = "flex";
+  openOverlayLock();
+  requestAnimationFrame(() => resetFullscreenZoom());
 }
 
 function closeFullscreen(){
-  document.getElementById("fullscreenViewer").style.display = "none";
+  fullscreenViewer.style.display = "none";
+  closeOverlayLock();
+  resetFullscreenZoom();
+}
+
+function handleFullscreenBackdrop(event){
+  if(event.target === fullscreenViewer) closeFullscreen();
+}
+
+function resetFullscreenZoom(){
+  scale = 1;
+  posX = 0;
+  posY = 0;
+  updateTransform();
 }
 
 function updateTransform(){
-  img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+  img.style.transform = `translate3d(${posX}px, ${posY}px, 0) scale(${scale})`;
+}
+
+function clampPosition(){
+  const rect = fullscreenImageWrap.getBoundingClientRect();
+  const baseW = img.naturalWidth || img.clientWidth || rect.width;
+  const baseH = img.naturalHeight || img.clientHeight || rect.height;
+  const fit = Math.min(rect.width / baseW, rect.height / baseH) || 1;
+  const renderedW = baseW * fit * scale;
+  const renderedH = baseH * fit * scale;
+  const maxMoveX = Math.max(0, (renderedW - rect.width) / 2);
+  const maxMoveY = Math.max(0, (renderedH - rect.height) / 2);
+  posX = Math.max(-maxMoveX, Math.min(maxMoveX, posX));
+  posY = Math.max(-maxMoveY, Math.min(maxMoveY, posY));
+}
+
+function setScale(nextScale, originX, originY){
+  const oldScale = scale;
+  const rect = img.getBoundingClientRect();
+  scale = Math.min(Math.max(nextScale, 1), 6);
+  if(scale === 1){
+    posX = 0;
+    posY = 0;
+  }else if(typeof originX === 'number' && typeof originY === 'number' && rect.width && rect.height){
+    const relX = originX - (rect.left + rect.width / 2);
+    const relY = originY - (rect.top + rect.height / 2);
+    const ratio = scale / oldScale;
+    posX = (posX - relX) * ratio + relX;
+    posY = (posY - relY) * ratio + relY;
+  }
+  clampPosition();
+  updateTransform();
+}
+
+function zoomInImage(event){
+  if(event) event.stopPropagation();
+  const rect = fullscreenImageWrap.getBoundingClientRect();
+  setScale(scale * 1.25, rect.left + rect.width/2, rect.top + rect.height/2);
+}
+
+function zoomOutImage(event){
+  if(event) event.stopPropagation();
+  const rect = fullscreenImageWrap.getBoundingClientRect();
+  setScale(scale * 0.8, rect.left + rect.width/2, rect.top + rect.height/2);
 }
 
 function getDistance(touches){
-  return Math.sqrt(
-    Math.pow(touches[0].clientX - touches[1].clientX,2) +
-    Math.pow(touches[0].clientY - touches[1].clientY,2)
+  return Math.hypot(
+    touches[0].clientX - touches[1].clientX,
+    touches[0].clientY - touches[1].clientY
   );
 }
 
-img.addEventListener("touchstart", function(e){
+img.addEventListener("load", resetFullscreenZoom);
 
+fullscreenImageWrap.addEventListener("wheel", function(e){
+  e.preventDefault();
+  e.stopPropagation();
+  const step = e.deltaY < 0 ? 1.2 : 0.83;
+  setScale(scale * step, e.clientX, e.clientY);
+}, { passive:false });
+
+img.addEventListener("dblclick", function(e){
+  e.preventDefault();
+  if(scale > 1){
+    setScale(1);
+  }else{
+    setScale(2.5, e.clientX, e.clientY);
+  }
+});
+
+img.addEventListener("mousedown", function(e){
+  if(scale <= 1) return;
+  e.preventDefault();
+  isDraggingImage = true;
+  startX = e.clientX - posX;
+  startY = e.clientY - posY;
+  img.classList.add("dragging");
+});
+
+document.addEventListener("mousemove", function(e){
+  if(!isDraggingImage) return;
+  e.preventDefault();
+  posX = e.clientX - startX;
+  posY = e.clientY - startY;
+  clampPosition();
+  updateTransform();
+});
+
+document.addEventListener("mouseup", function(){
+  isDraggingImage = false;
+  img.classList.remove("dragging");
+});
+
+img.addEventListener("touchstart", function(e){
   if(e.touches.length === 1){
     startX = e.touches[0].clientX - posX;
     startY = e.touches[0].clientY - posY;
-  }
-
-  if(e.touches.length === 2){
+  }else if(e.touches.length === 2){
     startDistance = getDistance(e.touches);
     startScale = scale;
   }
-
-});
+  e.preventDefault();
+}, { passive:false });
 
 img.addEventListener("touchmove", function(e){
-
-  if(e.touches.length === 1){
-
-  if(scale > 1){
-
+  if(e.touches.length === 1 && scale > 1){
     posX = e.touches[0].clientX - startX;
-posY = e.touches[0].clientY - startY;
-
-// ограничение движения
-let maxMove = (scale - 1) * 200;
-
-posX = Math.max(-maxMove, Math.min(maxMove, posX));
-posY = Math.max(-maxMove, Math.min(maxMove, posY));
-
-updateTransform();
-
+    posY = e.touches[0].clientY - startY;
+    clampPosition();
+    updateTransform();
+  }else if(e.touches.length === 2){
+    const newDistance = getDistance(e.touches);
+    const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+    const centerY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+    setScale(startScale * (newDistance / startDistance), centerX, centerY);
   }
+  e.preventDefault();
+}, { passive:false });
 
+let lastTapTime = 0;
+img.addEventListener("touchend", function(e){
+  const now = Date.now();
+  if(now - lastTapTime < 280){
+    const touch = e.changedTouches && e.changedTouches[0];
+    if(scale > 1){
+      setScale(1);
+    }else{
+      setScale(2.5, touch ? touch.clientX : window.innerWidth / 2, touch ? touch.clientY : window.innerHeight / 2);
+    }
+  }
+  lastTapTime = now;
+});
+
+fullscreenViewer.addEventListener("wheel", function(e){ e.preventDefault(); }, { passive:false });
+fullscreenViewer.addEventListener("touchmove", function(e){ e.preventDefault(); }, { passive:false });
+img.addEventListener("dragstart", function(e){ e.preventDefault(); });
+
+window.addEventListener("keydown", function(e){
+  if(e.key === "Escape" && fullscreenViewer.style.display === "flex") closeFullscreen();
+});
+const viewModalEl = document.getElementById('viewModal');
+if(viewModalEl){
+  const stopBackgroundScroll = function(e){
+    if(viewModalEl.style.display === 'flex' && !e.target.closest('.modal-content')){
+      e.preventDefault();
+    }
+  };
+  viewModalEl.addEventListener('wheel', stopBackgroundScroll, { passive:false });
+  viewModalEl.addEventListener('touchmove', stopBackgroundScroll, { passive:false });
 }
 
-  if(e.touches.length === 2){
-
-    let newDistance = getDistance(e.touches);
-
-    scale = startScale * (newDistance / startDistance);
-
-scale = Math.min(Math.max(scale,1),5);
-
-if(scale === 1){
-  posX = 0;
-  posY = 0;
+function hardBlockWhenOverlayOpen(e){
+  const fullscreenOpen = fullscreenViewer && fullscreenViewer.style.display === 'flex';
+  const viewOpen = viewModalEl && viewModalEl.style.display === 'flex';
+  if(fullscreenOpen || viewOpen){
+    const insideAllowed = e.target.closest('#fullscreenViewer .fullscreen-image-wrap') || e.target.closest('#viewModal .modal-content');
+    if(!insideAllowed){
+      e.preventDefault();
+    }
+  }
 }
 
-updateTransform();
+document.addEventListener('touchmove', hardBlockWhenOverlayOpen, { passive:false });
+document.addEventListener('wheel', hardBlockWhenOverlayOpen, { passive:false });
 
-  }
-
-});
-
-img.addEventListener("touchend", function(){
-
-});
-img.addEventListener("touchend", function(){
-
-});
-
-
-// ===== ЗАГРУЗКА ФОТО В FIREBASE STORAGE =====
+// ===== ЕКОНОМНИЙ РЕЖИМ: без Firebase Storage =====
 async function uploadImagesToFirebase(files){
-
-  const urls = [];
-
-  for(const file of files){
-
-    const fileName = Date.now() + "_" + file.name;
-
-    const storageRef = storage.ref("products/" + fileName);
-
-    await storageRef.put(file);
-
-    const url = await storageRef.getDownloadURL();
-
-    urls.push(url);
-
-  }
-
-  return urls;
+  console.warn('Firebase Storage вимкнений для економії на Blaze. Використовуй URL фото або base64 лише точково.');
+  return [];
 }
 
 
