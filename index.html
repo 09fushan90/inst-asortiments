@@ -72,10 +72,6 @@ box-shadow:0 0 20px #90ee90;
   cursor: pointer;
 }
 
-/.product img:hover{
-transform:scale(5.5);
-}/
-
 .product h4{
 font-size:26px;
 margin:15px 0;
@@ -171,7 +167,7 @@ box-sizing:border-box;
   width:100%;
   height:140px;
   object-fit:contain;
- cursor:pointer; border: 3xp solid #32cd32; border: 12xp;
+ cursor:pointer; border: 3px solid #32cd32; border: 12px;
 }
 * {
   box-sizing: border-box;
@@ -221,7 +217,7 @@ html, body {
   border-radius:10px;
 }
 
-.modal-content img{width:100%; aspect-ratio:1/1; object-fit:contain;  border: 3xp solid red; padding: 12xp; background: #111;}
+.modal-content img{width:100%; aspect-ratio:1/1; object-fit:contain;  border: 3px solid red; padding: 12px; background: #111;}
 input, textarea, select{width:100%; padding:8px; margin:5px 0; border:none;}
 @media(max-width:900px){.products{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:600px){.products{grid-template-columns:1fr;}.search-box input{
@@ -375,7 +371,6 @@ color:white;
 #orderSelectedBtn{position:fixed !important;}
 @media(max-width:600px){.checkout-grid{grid-template-columns:1fr;}.cart-item{grid-template-columns:56px 1fr;}.cart-qty{grid-column:1 / -1;justify-content:flex-start;}}
 
-
 /* MENU */
 #menuBtn{
 position:fixed;
@@ -462,7 +457,6 @@ display:none;
 display:block;
 }
 
-
 .menu-link-btn,
 .menu-copy-btn,
 .menu-location-btn{
@@ -495,7 +489,6 @@ color:#000;
 background:#333;
 color:#fff;
 }
-
 
 .submenu{
 max-height:0;
@@ -578,7 +571,6 @@ background:#229ED9;
 color:#fff;
 }
 
-
 .menu-icon-label{
 display:inline-flex;
 align-items:center;
@@ -591,9 +583,6 @@ height:18px;
 display:inline-block;
 flex:0 0 18px;
 }
-
-
-
 
 .search-box{
 margin:0 0 8px 0;
@@ -630,8 +619,6 @@ box-sizing:border-box;
     border: none;
     background: #eee;
 }
-
-
 
 /* Registration */
 .auth-required-modal .modal-content{
@@ -690,7 +677,6 @@ box-sizing:border-box;
   border:1px solid #2f5f2f;
   cursor:pointer;
 }
-
 
 /* auth + profile + history */
 #sideMenu{
@@ -789,7 +775,6 @@ box-sizing:border-box;
   padding:20px 0;
 }
 
-
 .google-auth-btn{
   background:#fff;
   color:#111;
@@ -816,9 +801,6 @@ box-sizing:border-box;
   margin-top:4px;
   text-align:left;
 }
-
-
-
 
 .fullscreen-viewer{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.96);justify-content:center;align-items:center;z-index:12000;overflow:hidden;touch-action:none;overscroll-behavior:none;}
 .fullscreen-image-wrap{position:relative;width:100%;height:100%;display:flex;justify-content:center;align-items:center;overflow:hidden;}
@@ -879,6 +861,251 @@ box-sizing:border-box;
   z-index: 9999;
 }
 
+:root{
+  --accent:#6bff2a;
+  --accent-2:#39d353;
+  --bg:#050505;
+  --bg-soft:#0c0c0c;
+  --panel:#111111;
+  --panel-2:#171717;
+  --line:#1f3b1f;
+  --text:#f5f5f5;
+  --muted:#b9c7b9;
+  --shadow:0 12px 34px rgba(0,0,0,.35);
+}
+html{scroll-behavior:smooth;}
+body{
+  background:radial-gradient(circle at top, rgba(107,255,42,.08), transparent 28%), linear-gradient(180deg,#050505 0%,#090909 100%);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+}
+body::before{
+  content:"";
+  font-size:0;
+}
+button{border-radius:12px;background:var(--accent);color:#081108;}
+button:hover{background:#84ff52;}
+#menuBtn{
+  top:18px;left:18px;
+  background:linear-gradient(135deg,var(--accent),#49d71c);
+  border-color:rgba(255,255,255,.08);
+}
+#orderSelectedBtn{
+  top:18px;right:18px;
+  background:linear-gradient(135deg,var(--accent),#49d71c);
+  border-color:#244924;
+}
+#sideMenu{background:rgba(10,10,10,.98);border-right:1px solid rgba(107,255,42,.1);}
+.menu-link-btn{background:#101010;border:1px solid rgba(107,255,42,.25);}
+.menu-copy-btn,.menu-register-btn{background:linear-gradient(135deg,var(--accent),#4ae11b);color:#061006;}
+.menu-location-btn,.submenu-toggle{background:#181818;border:1px solid #2a2a2a;}
+.owner-contact-btn{background:var(--accent);}
+header.site-header{
+  position:relative;
+  z-index:2;
+  max-width:1300px;
+  margin:0 auto;
+  padding:24px 20px 8px;
+}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  background:rgba(10,10,10,.88);
+  border:1px solid rgba(107,255,42,.14);
+  border-radius:24px;
+  padding:20px 24px 20px 86px;
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(8px);
+}
+.brand-block{display:flex;align-items:center;gap:16px;min-width:0;}
+.logo-mark{
+  width:58px;height:58px;border-radius:18px;
+  background:linear-gradient(135deg,var(--accent),#49d71c);
+  position:relative;flex:0 0 58px;
+  box-shadow:0 8px 24px rgba(107,255,42,.25);
+}
+.logo-mark::before{
+  content:"";position:absolute;inset:11px;border:4px solid #081108;border-radius:14px;
+  clip-path:polygon(15% 0,100% 0,100% 85%,85% 100%,0 100%,0 15%);
+}
+.logo-mark::after{
+  content:"I";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  color:#071007;font-size:30px;font-weight:900;
+}
+.brand-text{min-width:0;}
+.brand-title{font-size:34px;font-weight:900;letter-spacing:.5px;line-height:1;color:#fff;}
+.brand-title span{color:var(--accent);}
+.brand-subtitle{margin-top:6px;color:var(--muted);font-size:13px;letter-spacing:2px;text-transform:uppercase;}
+.header-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end;}
+.header-chip{
+  padding:10px 14px;border-radius:999px;background:#111;border:1px solid rgba(107,255,42,.14);color:#d8e5d8;font-size:14px;
+}
+.hero{
+  max-width:1300px;margin:18px auto 0;padding:0 20px;position:relative;z-index:2;
+}
+.hero-card{
+  display:grid;grid-template-columns:1.15fr .85fr;gap:24px;align-items:stretch;
+  border-radius:30px;padding:34px;overflow:hidden;
+  background:linear-gradient(135deg,rgba(11,11,11,.98),rgba(18,18,18,.97));
+  border:1px solid rgba(107,255,42,.15);box-shadow:var(--shadow);
+}
+.hero-copy{display:flex;flex-direction:column;justify-content:center;min-width:0;}
+.hero-kicker{color:var(--accent);font-weight:700;letter-spacing:2px;text-transform:uppercase;font-size:13px;margin-bottom:14px;}
+.hero-copy h1{font-size:58px;line-height:.98;margin:0 0 16px;color:#fff;max-width:680px;}
+.hero-copy p{font-size:19px;line-height:1.5;color:#d0dbd0;max-width:620px;margin:0 0 24px;}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;}
+.hero-primary{padding:14px 22px;font-size:16px;font-weight:800;}
+.hero-secondary{padding:14px 22px;font-size:16px;font-weight:800;background:#111;color:#fff;border:1px solid rgba(107,255,42,.22);}
+.hero-features{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px;}
+.hero-feature{padding:10px 14px;border-radius:14px;background:#111;border:1px solid rgba(107,255,42,.1);color:#dbe8db;font-size:14px;}
+.hero-visual{
+  min-height:360px;border-radius:24px;position:relative;overflow:hidden;
+  background:radial-gradient(circle at 20% 10%, rgba(107,255,42,.18), transparent 25%), linear-gradient(180deg,#171717 0%,#0c0c0c 100%);
+  border:1px solid rgba(107,255,42,.12);
+}
+.hero-tool{
+  position:absolute;right:20px;bottom:18px;width:min(100%,430px);height:88%;object-fit:contain;filter:drop-shadow(0 18px 30px rgba(0,0,0,.5));
+}
+.hero-glow{position:absolute;inset:auto auto 24px 24px;width:170px;height:170px;background:radial-gradient(circle,var(--accent),transparent 65%);opacity:.15;filter:blur(15px);}
+.hero-badge{position:absolute;top:18px;right:18px;padding:10px 14px;border-radius:999px;background:rgba(0,0,0,.55);border:1px solid rgba(107,255,42,.24);color:#fff;font-weight:700;}
+.overview-grid{max-width:1300px;margin:18px auto 0;padding:0 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;position:relative;z-index:2;}
+.overview-card{background:#0f0f0f;border:1px solid rgba(107,255,42,.12);border-radius:22px;padding:18px;box-shadow:var(--shadow);}
+.overview-card-title{color:#fff;font-size:17px;font-weight:700;margin-bottom:8px;}
+.overview-card-text{color:#c4d1c4;line-height:1.45;font-size:14px;}
+#topMainCategories{max-width:1300px;margin:16px auto 0;padding:0 20px;display:flex;flex-direction:row;flex-wrap:wrap;justify-content:flex-start;gap:10px;}
+.top-main-category-btn{
+  width:auto;min-width:160px;text-align:center;margin:0;
+  background:#111;color:#fff;border:1px solid rgba(107,255,42,.18);padding:14px 18px;border-radius:14px;
+}
+.top-main-category-btn.active{background:linear-gradient(135deg,var(--accent),#48dc19);color:#071007;border-color:transparent;}
+.container{max-width:1300px;padding:18px 20px 28px;}
+.catalog-shell{background:rgba(8,8,8,.84);border:1px solid rgba(107,255,42,.1);border-radius:28px;padding:20px;box-shadow:var(--shadow);}
+.catalog-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:16px;flex-wrap:wrap;}
+.catalog-title{margin:0;color:#fff;font-size:34px;line-height:1;}
+.catalog-subtitle{margin:6px 0 0;color:#b9c7b9;font-size:15px;}
+.search-box{margin:0;display:block;}
+.search-wrapper{width:100%;}
+.search-wrapper input{
+  background:#f4f6f4;color:#111;padding:18px 155px 18px 18px;border-radius:18px;
+  border:1px solid rgba(107,255,42,.12);font-size:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.5);
+}
+.search-wrapper select{top:50%;right:8px;background:#fff;border:1px solid #d9e6d9;width:138px;padding:11px 12px;border-radius:14px;}
+#subCategoryBackWrap{margin-top:12px !important;}
+#subCategoryBackBtn,#backToHomeBtn{background:#111 !important;color:var(--accent) !important;border:1px solid rgba(107,255,42,.18) !important;box-shadow:var(--shadow);}
+#backToHomeBtn{top:104px;left:18px;}
+.products{padding:6px 0 0;gap:16px;grid-template-columns:repeat(2,minmax(0,1fr));}
+@media (min-width:900px){.products{grid-template-columns:repeat(4,minmax(0,1fr));}}
+.product{
+  background:linear-gradient(180deg,#101010,#141414);border:1px solid rgba(107,255,42,.12);
+  border-radius:22px;padding:14px;box-shadow:var(--shadow);aspect-ratio:auto;overflow:hidden;
+}
+.product:hover{transform:translateY(-4px);box-shadow:0 18px 30px rgba(0,0,0,.35), 0 0 0 1px rgba(107,255,42,.14);}
+.product img{
+  height:210px;background:#fff;padding:14px;border-radius:18px;border:none;object-fit:contain;
+}
+.product h4{white-space:normal;overflow:visible;text-overflow:initial;font-size:18px;margin:14px 0 8px;color:#fff;min-height:44px;}
+.product p{white-space:normal;overflow:visible;text-overflow:initial;color:var(--accent);font-size:20px;font-weight:800;margin:0 0 8px;}
+.card-buttons{margin-top:10px;gap:8px;}
+.order-btn,.add-btn,.edit-btn{padding:12px 14px;border-radius:14px;font-weight:800;margin-top:0;}
+.add-btn{background:#181818;color:#fff;border:1px solid rgba(107,255,42,.15);}
+.edit-btn{background:#2f2f2f;color:#fff;}
+.modal-content,.cart-modal-content{background:#101010;border:1px solid rgba(107,255,42,.18);border-radius:24px;color:#fff;}
+.modal-content img{background:#fff;border-radius:18px;}
+input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
+@media (max-width:1024px){
+  .hero-card{grid-template-columns:1fr;}
+  .hero-copy h1{font-size:46px;max-width:none;}
+  .overview-grid{grid-template-columns:repeat(2,1fr);}
+  .topbar{padding-right:20px;}
+}
+@media (max-width:700px){
+  header.site-header{padding:18px 14px 8px;}
+  .topbar{padding:18px 18px 18px 82px;align-items:flex-start;}
+  .brand-title{font-size:28px;}
+  .brand-subtitle{font-size:11px;letter-spacing:1.4px;}
+  .header-actions{display:none;}
+  .hero,.overview-grid,#topMainCategories,.container{padding-left:14px;padding-right:14px;}
+  .hero-card{padding:22px;gap:18px;border-radius:24px;}
+  .hero-copy h1{font-size:35px;}
+  .hero-copy p{font-size:16px;}
+  .hero-visual{min-height:250px;}
+  .overview-grid{grid-template-columns:1fr;}
+  #topMainCategories{gap:8px;}
+  .top-main-category-btn{min-width:calc(50% - 4px);padding:13px 12px;font-size:14px;}
+  .catalog-shell{padding:16px;}
+  .catalog-title{font-size:28px;}
+  .search-wrapper input{padding:15px 126px 15px 14px;font-size:15px;}
+  .search-wrapper select{width:116px;padding:10px;font-size:13px;}
+  .products{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+  .product{padding:10px;border-radius:18px;}
+  .product img{height:145px;border-radius:14px;padding:10px;}
+  .product h4{font-size:15px;min-height:38px;}
+  .product p{font-size:18px;}
+  .order-btn,.add-btn,.edit-btn{padding:10px 10px;font-size:13px;}
+}
+
+.office-edit-outline{
+  outline:2px dashed rgba(107,255,42,.75) !important;
+  outline-offset:4px;
+  cursor:pointer !important;
+  position:relative;
+}
+.office-edit-outline[data-office-editable="image"]{
+  outline-offset:8px;
+}
+.office-edit-badge{
+  position:fixed;
+  z-index:13010;
+  background:#6bff2a;
+  color:#071007;
+  font-size:12px;
+  font-weight:800;
+  padding:6px 10px;
+  border-radius:999px;
+  pointer-events:none;
+  box-shadow:0 6px 18px rgba(0,0,0,.35);
+  display:none;
+}
+.office-panel{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:13000;
+  display:none;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.office-panel button{
+  margin:0;
+  box-shadow:0 10px 22px rgba(0,0,0,.35);
+}
+.office-hidden{
+  display:none !important;
+}
+#officeEditorModal .modal-content{
+  max-width:520px;
+}
+#officeEditorTextarea{
+  min-height:140px;
+  resize:vertical;
+}
+#officeImagePreviewWrap{
+  display:none;
+  margin-top:8px;
+}
+#officeImagePreview{
+  width:100%;
+  max-height:220px;
+  object-fit:contain;
+  background:#fff;
+  border-radius:14px;
+}
+.office-help{
+  font-size:13px;
+  color:#b8efb8;
+  margin-top:8px;
+  line-height:1.4;
+}
 
 </style>
 
@@ -891,7 +1118,6 @@ box-sizing:border-box;
 <body>
 
 <button id="menuBtn" onclick="toggleMenu()">☰</button>
-
 
 <div id="sideMenu">
 <div id="userBadge" onclick="openProfileModal()">👤 Профіль</div>
@@ -940,38 +1166,104 @@ box-sizing:border-box;
 <p id="copyMessage" style="font-size:13px;color:#90ee90;margin-top:14px;min-height:18px;"></p>
 </div>
 
-
 <div id="menuOverlay" onclick="toggleMenu()"></div>
 
 <div id="loader">
   <div class="spinner"></div>
 </div>
 
-<header style="font-size:34px;font-weight:bold;padding:14px 0;margin-top:5px;">Inst asortiments</header>
+<header class="site-header">
+  <div class="topbar">
+    <div class="brand-block">
+      <div class="logo-mark" aria-hidden="true"></div>
+      <div class="brand-text">
+        <div class="brand-title" data-office-editable="text" data-office-key="brand_title">Inst<span>Sort</span></div>
+        <div class="brand-subtitle" data-office-editable="text" data-office-key="brand_subtitle">Інструменти для професіоналів</div>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div class="header-chip" data-office-editable="text" data-office-key="header_chip_1">Гарантія якості</div>
+      <div class="header-chip" data-office-editable="text" data-office-key="header_chip_2">Швидка доставка</div>
+      <div class="header-chip" data-office-editable="text" data-office-key="header_chip_3">Перевірені бренди</div>
+    </div>
+  </div>
+</header>
+
+<section class="hero" data-office-editable="block" data-office-key="hero_section">
+  <div class="hero-card">
+    <div class="hero-copy">
+      <div class="hero-kicker" data-office-editable="text" data-office-key="hero_kicker">InstSort</div>
+      <h1 data-office-editable="text" data-office-key="hero_title">ІНСТРУМЕНТИ ДЛЯ ПРОФЕСІОНАЛІВ</h1>
+      <p data-office-editable="text" data-office-key="hero_text">Якісний електроінструмент, ручний інструмент та оснащення для дому, майстерні та щоденної роботи.</p>
+      <div class="hero-actions">
+        <button class="hero-primary" onclick="scrollToProducts()" data-office-editable="text" data-office-key="hero_button_primary">Переглянути каталог</button>
+        <button class="hero-secondary" onclick="toggleMenu()" data-office-editable="text" data-office-key="hero_button_secondary">Меню магазину</button>
+      </div>
+      <div class="hero-features">
+        <div class="hero-feature" data-office-editable="text" data-office-key="hero_feature_1">Якість</div>
+        <div class="hero-feature" data-office-editable="text" data-office-key="hero_feature_2">Швидка доставка</div>
+        <div class="hero-feature" data-office-editable="text" data-office-key="hero_feature_3">Популярні бренди</div>
+        <div class="hero-feature" data-office-editable="text" data-office-key="hero_feature_4">Підтримка 24/7</div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-badge" data-office-editable="text" data-office-key="hero_badge">InstSort</div>
+      <div class="hero-glow"></div>
+      <img class="hero-tool" data-office-editable="image" data-office-key="hero_image" src="data:image/svg+xml;utf8,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20480%20420%27%3E%3Crect%20width=%27480%27%20height=%27420%27%20fill=%27none%27/%3E%3Cg%20transform=%27translate(40%2040)%27%3E%3Cpath%20d=%27M60%20150h110l30-28h68c18%200%2030%2012%2030%2030v18c0%2018-12%2030-30%2030h-26v102c0%2010-8%2018-18%2018h-40c-10%200-18-8-18-18v-76h-26l-74%2072c-9%209-24%209-33%200l-18-18c-9-9-9-24%200-33l58-57H60c-22%200-40-18-40-40s18-40%2040-40z%27%20fill=%27%236bff2a%27/%3E%3Cpath%20d=%27M238%20122h54l84-58%2022%2022-55%2084h-75z%27%20fill=%27%23ffffff%27%20opacity=%27.9%27/%3E%3Ccircle%20cx=%27213%27%20cy=%27172%27%20r=%2716%27%20fill=%27%23090f09%27/%3E%3Crect%20x=%2788%27%20y=%27154%27%20width=%2756%27%20height=%2718%27%20rx=%279%27%20fill=%27%23090f09%27/%3E%3Cpath%20d=%27M344%20154h52c18%200%2032%2014%2032%2032s-14%2032-32%2032h-42z%27%20fill=%27%23282828%27/%3E%3Cpath%20d=%27M356%2088l36-34%27%20stroke=%27%236bff2a%27%20stroke-width=%2718%27%20stroke-linecap=%27round%27/%3E%3C/g%3E%3C/svg%3E" alt="Інструмент InstSort">
+    </div>
+  </div>
+</section>
+
+<section class="overview-grid" data-office-editable="block" data-office-key="overview_section">
+  <div class="overview-card">
+    <div class="overview-card-title" data-office-editable="text" data-office-key="overview_title_1">Сучасний дизайн</div>
+    <div class="overview-card-text" data-office-editable="text" data-office-key="overview_text_1">Оновлений темний стиль з фірмовим зеленим акцентом, як на макеті.</div>
+  </div>
+  <div class="overview-card">
+    <div class="overview-card-title" data-office-editable="text" data-office-key="overview_title_2">Усі функції збережені</div>
+    <div class="overview-card-text" data-office-editable="text" data-office-key="overview_text_2">Кошик, пошук, категорії, адмінка, Firebase та замовлення працюють як раніше.</div>
+  </div>
+  <div class="overview-card">
+    <div class="overview-card-title" data-office-editable="text" data-office-key="overview_title_3">Фокус на продаж</div>
+    <div class="overview-card-text" data-office-editable="text" data-office-key="overview_text_3">Великий перший екран і контрастні кнопки краще ведуть людину до каталогу.</div>
+  </div>
+  <div class="overview-card">
+    <div class="overview-card-title" data-office-editable="text" data-office-key="overview_title_4">Адаптація під телефон</div>
+    <div class="overview-card-text" data-office-editable="text" data-office-key="overview_text_4">Новий вигляд акуратно підлаштовується під мобільний екран.</div>
+  </div>
+</section>
+
 <div id="topMainCategories" class="top-main-categories"></div>
 <div class="container">
-  
-<div class="search-box">
-    
-<div class="search-wrapper">
-  <input type="text" id="searchInput" placeholder="Пошук товару..." onkeyup="handleSearch()">
-  <select id="categoryFilter" onchange="filterCategory()">
-    <option value="">Категорії</option>
-  </select>
-</div>
-<div id="subCategoryBackWrap" style="display:none;text-align:left;margin:8px 0 0 0;">
-  <button id="subCategoryBackBtn" type="button" onclick="resetSubCategoryFilter()" style="display:flex;align-items:center;justify-content:center;width:50px;height:50px;border-radius:50%;background:#1b1b1b;color:#90ee90;border:1px solid #2f5f2f;font-size:22px;cursor:pointer;">
-    ←
-  </button>
-</div>
+  <div class="catalog-shell" id="catalogSection">
+    <div class="catalog-head">
+      <div>
+        <h2 class="catalog-title" data-office-editable="text" data-office-key="catalog_title">Каталог товарів</h2>
+        <div class="catalog-subtitle" data-office-editable="text" data-office-key="catalog_subtitle">Знайди потрібний інструмент через пошук, основні категорії або фільтр.</div>
+      </div>
+      <div style="text-align:center;display:flex;gap:8px;flex-wrap:wrap;">
+        <button id="addProductBtn" style="display:none;" onclick="openAddModal()">Додати товар</button>
+        <button id="manageCategoriesBtn" style="display:none;" onclick="openCategoryModal()">Категорії</button>
+        <button id="manageMainCategoriesBtn" style="display:none;" onclick="openMainCategoryModal()">Осн. категорії</button>
+      </div>
+    </div>
 
+    <div class="search-box">
+      <div class="search-wrapper">
+        <input type="text" id="searchInput" placeholder="Пошук товару..." onkeyup="handleSearch()">
+        <select id="categoryFilter" onchange="filterCategory()">
+          <option value="">Категорії</option>
+        </select>
+      </div>
+      <div id="subCategoryBackWrap" style="display:none;text-align:left;margin:8px 0 0 0;">
+        <button id="subCategoryBackBtn" type="button" onclick="resetSubCategoryFilter()" style="display:flex;align-items:center;justify-content:center;width:50px;height:50px;border-radius:50%;background:#1b1b1b;color:#90ee90;border:1px solid #2f5f2f;font-size:22px;cursor:pointer;">
+          ←
+        </button>
+      </div>
+    </div>
+
+    <div class="products" id="products"></div>
   </div>
-  <div style="text-align:center;">
-    <button id="addProductBtn" style="display:none;" onclick="openAddModal()">Додати товар</button>
-    <button id="manageCategoriesBtn" style="display:none;" onclick="openCategoryModal()">Категорії</button>
-    <button id="manageMainCategoriesBtn" style="display:none;" onclick="openMainCategoryModal()">Осн. категорії</button>
-  </div>
-  <div class="products" id="products"></div>
 </div>
 
 <!-- Модали -->
@@ -1049,7 +1341,6 @@ box-sizing:border-box;
   </div>
 </div>
 
-
 <div class="modal" id="cartModal" onclick="handleModalBackdrop(event, 'cartModal', closeCartModal)">
   <div class="modal-content cart-modal-content">
     <div class="cart-header">
@@ -1095,7 +1386,6 @@ box-sizing:border-box;
   </div>
 </div>
 
-
 <div class="modal auth-required-modal" id="authRequiredModal">
   <div class="modal-content">
     <h3 style="margin-top:0;">Ви ще не зареєструвалися</h3>
@@ -1123,8 +1413,6 @@ box-sizing:border-box;
   </div>
 </div>
 
-
-
 <div class="modal" id="loginModal" onclick="handleModalBackdrop(event, 'loginModal', closeLoginModal)">
   <div class="modal-content">
     <h3 style="margin-top:0;">Вхід</h3>
@@ -1138,7 +1426,6 @@ box-sizing:border-box;
     </div>
   </div>
 </div>
-
 
 <div class="modal auth-required-modal" id="authRequiredModal">
   <div class="modal-content">
@@ -1338,7 +1625,6 @@ function getRegisteredUser(){
 function isUserLoggedIn(){
   return localStorage.getItem(LOGIN_STORAGE_KEY) === 'true';
 }
-
 
 function updateAuthMenuButtons(){
   const registerBtn = document.getElementById('registerMenuBtn');
@@ -1701,6 +1987,8 @@ let currentImages = [];
 let currentIndex = 0;
 let mainCategories = [];
 let currentMainCategoryFilter = '';
+var CART_STORAGE_KEY = 'inst_asortiments_cart';
+var selectedProducts = [];
 
 function isAdminUser(){
   try{
@@ -1744,8 +2032,6 @@ async function loadData(forceRefresh = false){
   }
 }
 
-loadData();
-
 function saveToDatabase(){
   const payload = getCatalogPayload();
   saveCatalogToCache(payload);
@@ -1758,7 +2044,6 @@ function hideLoader(){
 window.addEventListener('online', () => {
   if(!getCatalogFromCache()) loadData(true);
 });
-
 
 // Категорії
 function populateCategorySelects(){
@@ -1800,7 +2085,6 @@ function showAddedToCart(){
     { transform: "scale(1)" }
   ], { duration: 250 });
 }
-
 
 function renderMainCategories(){
   const container = document.getElementById('topMainCategories');
@@ -1965,56 +2249,7 @@ function closeModal(){
   document.getElementById("fullscreenViewer").style.display = "none";
   closeOverlayLock();
 }
-function openAddModal(){editingId=null;document.getElementById("editTitleText").innerText="Додати товар";document.getElementById("editTitle").value="";document.getElementById("editPrice").value="";document.getElementById("editImageFile").value="";document.getElementById("editDesc").value="";document.getElementById("editCategory").value="";
-  if(document.getElementById("editMainCategory")) document.getElementById("editMainCategory").value="";document.getElementById("deleteBtn").style.display="none";document.getElementById("editModal").style.display="flex";}
-function openEditModal(id){let p=products.find(x=>x.id===id);editingId=id;document.getElementById("editTitleText").innerText="Редагувати товар";document.getElementById("editTitle").value=p.title;document.getElementById("editPrice").value=p.price;document.getElementById("editDesc").value=p.desc;document.getElementById("editCategory").value=p.category||"";
-  if(document.getElementById("editMainCategory")) document.getElementById("editMainCategory").value=p.mainCategory||"";document.getElementById("editImageFile").value="";document.getElementById("deleteBtn").style.display="block";document.getElementById("editModal").style.display="flex";}
 function closeEditModal(){document.getElementById("editModal").style.display="none";}
-function saveProduct(){
-  let title = document.getElementById("editTitle").value;
-  let price = document.getElementById("editPrice").value;
-  let desc = document.getElementById("editDesc").value;
-  let category = document.getElementById("editCategory").value;
-  let mainCategory = document.getElementById("editMainCategory") ? document.getElementById("editMainCategory").value : "";
-  let imageUrl = document.getElementById("editImageUrl").value
-    .split("\n")
-    .map(x => x.trim())
-    .filter(x => x);
-
-  if(!title || !price || !desc) return alert("Заповніть всі поля");
-
-  let images = tempImages.length > 0
-    ? [...tempImages]
-    : imageUrl.length > 0
-      ? imageUrl
-      : (editingId ? products.find(x=>x.id===editingId).image : []);
-
-  saveProductData(title, price, desc, category, mainCategory, images);
-}
-function saveProductData(title, price, desc, category, mainCategory, images){
-  if(editingId){
-    let p = products.find(x => x.id === editingId);
-    p.title = title;
-    p.price = price;
-    p.desc = desc;
-    p.category = category;
-    p.mainCategory = mainCategory || "";
-    p.image = Array.isArray(images) ? images : [images];
-  } else {
-    products.push({
-      id: Date.now(),
-      title,
-      price,
-      desc,
-      category,
-      mainCategory: mainCategory || "",
-      image: Array.isArray(images) ? images : [images]
-    });
-  }
-  saveToDatabase();
-  closeEditModal();
-  applyAllFilters();
-}
 function deleteProduct(){if(editingId){if(confirm("Ви впевнені, що хочете видалити цей товар?")){products=products.filter(p=>p.id!==editingId);saveToDatabase();renderProducts();closeEditModal();}}}
 
 // Категорії
@@ -2155,31 +2390,38 @@ function addImageFromUrl(){
 
 // Открытие модалки "добавить товар"
 function openAddModal(){
-  editingId=null;
-  document.getElementById("editTitleText").innerText="Додати товар";
-  document.getElementById("editTitle").value="";
-  document.getElementById("editPrice").value="";
-  document.getElementById("editDesc").value="";
-  document.getElementById("editCategory").value="";
+  editingId = null;
+  document.getElementById("editTitleText").innerText = "Додати товар";
+  document.getElementById("editTitle").value = "";
+  document.getElementById("editPrice").value = "";
+  document.getElementById("editDesc").value = "";
+  document.getElementById("editCategory").value = "";
+  if(document.getElementById("editMainCategory")) document.getElementById("editMainCategory").value = "";
+  document.getElementById("editImageUrl").value = "";
+  document.getElementById("editImageFile").value = "";
   tempImages = [];
   renderTempImages();
-  document.getElementById("deleteBtn").style.display="none";
-  document.getElementById("editModal").style.display="flex";
+  document.getElementById("deleteBtn").style.display = "none";
+  document.getElementById("editModal").style.display = "flex";
 }
 
 // Открытие модалки "редактировать товар"
 function openEditModal(id){
-  let p = products.find(x=>x.id===id);
-  editingId=id;
-  document.getElementById("editTitleText").innerText="Редагувати товар";
-  document.getElementById("editTitle").value=p.title;
-  document.getElementById("editPrice").value=p.price;
-  document.getElementById("editDesc").value=p.desc;
-  document.getElementById("editCategory").value=p.category||"";
+  const p = products.find(x => x.id === id);
+  if(!p) return;
+  editingId = id;
+  document.getElementById("editTitleText").innerText = "Редагувати товар";
+  document.getElementById("editTitle").value = p.title || "";
+  document.getElementById("editPrice").value = p.price || "";
+  document.getElementById("editDesc").value = p.desc || "";
+  document.getElementById("editCategory").value = p.category || "";
+  if(document.getElementById("editMainCategory")) document.getElementById("editMainCategory").value = p.mainCategory || "";
+  document.getElementById("editImageUrl").value = "";
+  document.getElementById("editImageFile").value = "";
   tempImages = Array.isArray(p.image) ? [...p.image] : (p.image ? [p.image] : []);
   renderTempImages();
-  document.getElementById("deleteBtn").style.display="block";
-  document.getElementById("editModal").style.display="flex";
+  document.getElementById("deleteBtn").style.display = "block";
+  document.getElementById("editModal").style.display = "flex";
 }
 
 // Сохранение товара
@@ -2208,14 +2450,17 @@ function saveProduct(){
 
 // saveProductData с массивом изображений
 function saveProductData(title, price, desc, category, mainCategory, images){
+  const normalizedImages = Array.isArray(images) ? images.filter(Boolean) : [images].filter(Boolean);
+
   if(editingId){
-    let p = products.find(x => x.id === editingId);
+    const p = products.find(x => x.id === editingId);
+    if(!p) return;
     p.title = title;
     p.price = price;
     p.desc = desc;
     p.category = category;
     p.mainCategory = mainCategory || "";
-    p.image = Array.isArray(images) ? images : [images];
+    p.image = normalizedImages;
   } else {
     products.push({
       id: Date.now(),
@@ -2224,17 +2469,15 @@ function saveProductData(title, price, desc, category, mainCategory, images){
       desc,
       category,
       mainCategory: mainCategory || "",
-      image: Array.isArray(images) ? images : [images]
+      image: normalizedImages
     });
   }
   saveToDatabase();
   closeEditModal();
-  renderProducts();
+  applyAllFilters();
 }
 
 /// масив товарів у кошику
-const CART_STORAGE_KEY = 'inst_asortiments_cart';
-
 function getCartStorageKey(){
   try{
     if(typeof getRegisteredUser === 'function'){
@@ -2244,9 +2487,10 @@ function getCartStorageKey(){
   }catch(error){}
   return CART_STORAGE_KEY + '_guest';
 }
-let selectedProducts = loadCartFromStorage();
+selectedProducts = loadCartFromStorage();
 updateSelectedUI();
-updateUserBadge();
+if(typeof updateUserBadge === 'function') updateUserBadge();
+loadData();
 
 function loadCartFromStorage(){
   try {
@@ -2267,7 +2511,6 @@ function saveCartToStorage(){
     console.error('Не вдалося зберегти кошик', error);
   }
 }
-
 
 function reloadCartForCurrentUser(){
   selectedProducts = loadCartFromStorage();
@@ -2642,7 +2885,6 @@ function renderProducts(list = products){
   });
 }
 
-
 document.getElementById("viewModal").addEventListener("click", function(e){
   if(e.target.id === "viewModal"){
     closeModal();
@@ -2655,51 +2897,9 @@ document.getElementById('checkoutModal').addEventListener('click', function(e){
   if(e.target.id === 'checkoutModal') closeCheckoutModal();
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function isUserRegistered(){
   return !!getRegisteredUser();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 </script>
 
@@ -2924,234 +3124,6 @@ document.addEventListener('wheel', hardBlockWhenOverlayOpen, { passive:false });
 async function uploadImagesToFirebase(files){
   console.warn('Firebase Storage вимкнений для економії на Blaze. Використовуй URL фото або base64 лише точково.');
   return [];
-}
-
-
-function toggleMenu(){
-  const menu = document.getElementById('sideMenu');
-  const overlay = document.getElementById('menuOverlay');
-  const btn = document.getElementById('menuBtn');
-
-  menu.classList.toggle('open');
-  overlay.classList.toggle('show');
-  btn.classList.toggle('active');
-}
-
-
-function copyPhone(phone){
-  const message = document.getElementById('copyMessage');
-
-  if(navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(phone).then(() => {
-      if(message) message.innerText = 'Номер скопійовано: ' + phone;
-    }).catch(() => {
-      fallbackCopyPhone(phone, message);
-    });
-  } else {
-    fallbackCopyPhone(phone, message);
-  }
-}
-
-function fallbackCopyPhone(phone, message){
-  const tempInput = document.createElement('input');
-  tempInput.value = phone;
-  document.body.appendChild(tempInput);
-  tempInput.select();
-  document.execCommand('copy');
-  document.body.removeChild(tempInput);
-  if(message) message.innerText = 'Номер скопійовано: ' + phone;
-}
-
-function showLocationSoon(){
-  const message = document.getElementById('copyMessage');
-  if(message) message.innerText = 'Геолокацію магазину буде додано пізніше.';
-}
-
-
-function toggleOwnersMenu(){
-  const menu = document.getElementById('ownersMenu');
-  if(!menu) return;
-
-  const isOpen = menu.classList.contains('open');
-  if(isOpen){
-    menu.classList.remove('open');
-    ['shopOwnerSection','siteOwnerSection'].forEach(id => {
-      const section = document.getElementById(id);
-      if(section) section.classList.remove('open');
-    });
-  } else {
-    menu.classList.add('open');
-  }
-}
-
-function toggleOwnerSection(id){
-  const section = document.getElementById(id);
-  if(!section) return;
-
-  const willOpen = !section.classList.contains('open');
-  section.classList.toggle('open');
-
-  if(willOpen){
-    setTimeout(() => {
-      section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }, 220);
-  }
-}
-
-
-const USER_STORAGE_KEY = 'inst_asortiments_user';
-
-function getRegisteredUser(){
-  try{
-    const raw = localStorage.getItem(USER_STORAGE_KEY);
-    if(!raw) return null;
-    const user = JSON.parse(raw);
-    if(user && user.name && user.email && user.password) return user;
-    return null;
-  }catch(error){
-    console.error('Не вдалося прочитати реєстрацію', error);
-    return null;
-  }
-}
-
-function isUserRegistered(){
-  return !!getRegisteredUser();
-}
-
-
-function updateAuthMenuButtons(){
-  const registerBtn = document.getElementById('registerMenuBtn');
-  const loginBtn = document.getElementById('loginMenuBtn');
-  const loggedIn = isUserLoggedIn();
-
-  if(registerBtn) registerBtn.style.display = loggedIn ? 'none' : 'block';
-  if(loginBtn) loginBtn.style.display = loggedIn ? 'none' : 'block';
-}
-
-function updateUserBadge(){
-  const badge = document.getElementById('userBadge');
-  const user = getRegisteredUser();
-  if(!badge) return;
-
-  if(user){
-    badge.style.display = 'block';
-    badge.textContent = '👤 ' + user.name;
-  }else{
-    badge.style.display = 'none';
-    badge.textContent = '';
-  }
-}
-
-function openRegisterModal(){
-  const el = document.getElementById('registerModal');
-  if(el){
-    el.style.display = 'flex';
-    document.body.classList.add('no-scroll');
-  }
-}
-
-function closeRegisterModal(){
-  const el = document.getElementById('registerModal');
-  if(el){
-    el.style.display = 'none';
-    document.body.classList.remove('no-scroll');
-  }
-}
-
-function openAuthRequiredModal(){
-  const el = document.getElementById('authRequiredModal');
-  if(el){
-    el.style.display = 'flex';
-    document.body.classList.add('no-scroll');
-  }
-}
-
-function closeAuthRequiredModal(){
-  const el = document.getElementById('authRequiredModal');
-  if(el){
-    el.style.display = 'none';
-    document.body.classList.remove('no-scroll');
-  }
-}
-
-function openRegisterFromWarning(){
-  closeAuthRequiredModal();
-  openRegisterModal();
-}
-
-function registerUser(){
-  const name = document.getElementById('registerName').value.trim();
-  const email = document.getElementById('registerEmail').value.trim();
-  const password = document.getElementById('registerPassword').value.trim();
-  const status = document.getElementById('registerStatus');
-
-  if(!name || !email || !password){
-    if(status) status.textContent = 'Заповніть всі поля.';
-    return;
-  }
-
-  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  if(!emailOk){
-    if(status) status.textContent = 'Введіть коректну електронну пошту.';
-    return;
-  }
-
-  if(password.length < 4){
-    if(status) status.textContent = 'Пароль має містити щонайменше 4 символи.';
-    return;
-  }
-
-  try{
-    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify({ name, email, password }));
-    if(status) status.textContent = 'Реєстрація успішна!';
-    updateUserBadge();
-    setTimeout(() => {
-      closeRegisterModal();
-    }, 350);
-  }catch(error){
-    console.error('Не вдалося зберегти реєстрацію', error);
-    if(status) status.textContent = 'Сталася помилка при збереженні.';
-  }
-}
-
-function requireRegistration(){
-  if(isUserRegistered()) return true;
-  openAuthRequiredModal();
-  return false;
-}
-
-
-function openLoginModal(){
-  document.getElementById('loginModal').style.display = 'flex';
-  document.body.classList.add('no-scroll');
-}
-
-function closeLoginModal(){
-  document.getElementById('loginModal').style.display = 'none';
-  document.body.classList.remove('no-scroll');
-}
-
-function loginUser(){
-  const email = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value.trim();
-  const status = document.getElementById('loginStatus');
-
-  const user = getRegisteredUser();
-
-  if(!user){
-    status.textContent = 'Користувач не знайдений.';
-    return;
-  }
-
-  if(user.email !== email || user.password !== password){
-    status.textContent = 'Невірна пошта або пароль.';
-    return;
-  }
-
-  status.textContent = 'Вхід успішний!';
-  setTimeout(() => {
-    closeLoginModal();
-  }, 300);
 }
 
 </script>
@@ -3441,7 +3413,6 @@ function loginUser(){
   }
 })();
 </script>
-
 
 <script>
 function handleModalBackdrop(event, modalId, closeFn){
