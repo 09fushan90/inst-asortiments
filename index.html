@@ -908,6 +908,7 @@ header.site-header{
   padding:24px 20px 8px;
 }
 .topbar{
+  position:relative;
   display:flex;align-items:center;justify-content:space-between;gap:20px;
   background:rgba(10,10,10,.88);
   border:1px solid rgba(107,255,42,.14);
@@ -1153,6 +1154,37 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
 }
 @media(max-width:700px){.office-section-edit-btn{top:10px;right:10px;padding:8px 10px;font-size:12px;}}
 
+.office-add-card-btn{
+  display:none;
+  grid-column:1 / -1;
+  width:220px;
+  justify-content:center;
+  align-items:center;
+  margin:0 0 4px 0;
+  padding:12px 16px;
+  border-radius:14px;
+  background:linear-gradient(135deg,var(--accent),#49d71c);
+  color:#071007;
+  font-weight:900;
+  box-shadow:0 10px 24px rgba(0,0,0,.35);
+}
+.office-active .office-add-card-btn{display:inline-flex;}
+.office-custom-card{position:relative;}
+.office-card-delete-btn{
+  display:none;
+  position:absolute;
+  top:14px;
+  left:14px;
+  z-index:20;
+  padding:10px 12px;
+  border-radius:14px;
+  background:#c62828;
+  color:#fff;
+  font-weight:900;
+}
+.office-active .office-card-delete-btn{display:inline-flex;}
+#officeTextModal .modal-content{max-width:520px;border-radius:24px;}
+#officeTextInput{width:100%;min-height:130px;resize:vertical;border-radius:14px;padding:12px;margin:8px 0;background:#f5f5f5;color:#111;border:none;box-sizing:border-box;}
 
 #officeCardTextModal .modal-content{
   max-width:520px;
@@ -1240,7 +1272,8 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
 </div>
 
 <header class="site-header">
-  <div class="topbar">
+  <div class="topbar" data-office-editable="block" data-office-key="header_section">
+    <button type="button" class="office-section-edit-btn" data-office-section-edit-btn onclick="toggleOfficeSectionEdit('header_section')">✏️ Редагувати</button>
     <div class="brand-block">
       <div class="logo-mark" aria-hidden="true"></div>
       <div class="brand-text">
@@ -1283,6 +1316,7 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
 </section>
 
 <section class="overview-grid" data-office-editable="block" data-office-key="overview_section">
+  <button type="button" id="addOverviewCardBtn" class="office-add-card-btn" onclick="addOfficeOverviewCard()">➕ Додати вікно</button>
   <div class="overview-card" data-office-editable="block" data-office-key="overview_card_1">
     <button type="button" class="office-section-edit-btn" data-office-section-edit-btn onclick="openOfficeCardTextModal('overview_card_1')">✏️ Редагувати</button>
     <div class="overview-card-title" data-office-editable="text" data-office-key="overview_title_1">Сучасний дизайн</div>
@@ -1579,6 +1613,18 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
       <button onclick="closeOfficeCardTextModal()" style="background:#444;color:#fff;">Скасувати</button>
     </div>
   </div>
+</div>
+
+<div class="modal" id="officeTextModal" onclick="handleOfficeTextBackdrop(event)">
+  <div class="modal-content">
+    <h3 style="margin-top:0;">Редагувати текст</h3>
+    <textarea id="officeTextInput" placeholder="Текст"></textarea>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;">
+      <button onclick="saveOfficeTextModal()">Зберегти</button>
+      <button onclick="closeOfficeTextModal()" style="background:#444;color:#fff;">Скасувати</button>
+    </div>
+  </div>
+</div>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -2577,11 +2623,16 @@ function scrollToProducts(){
 
 // Редагування текстів і фото на головному екрані через Офіс
 const OFFICE_CONTENT_CACHE_KEY = 'inst_asortiments_office_content_v1';
+const OFFICE_CUSTOM_CARDS_KEY = 'overview_custom_cards';
+const OFFICE_CONTENT_DB_PATH = 'siteContent';
 let officeContent = {};
+let officeContentRealtimeStarted = false;
 let officeEditInitialized = false;
 let officeImageInput = null;
 let currentOfficeImageElement = null;
 let activeOfficeSectionKey = null;
+let currentOfficeTextElement = null;
+let currentOfficeCustomCardId = null;
 
 function getOfficeEditableElements(){
   return Array.from(document.querySelectorAll('[data-office-editable][data-office-key]'));
@@ -2625,30 +2676,175 @@ function applyOfficeContent(){
       setOfficeElementValue(el, officeContent[key]);
     }
   });
+  renderOfficeCustomCards();
+}
+
+function normalizeOfficeContentData(data){
+  if(!data || typeof data !== 'object') return {};
+  return {...data};
+}
+
+function startOfficeContentRealtime(){
+  if(officeContentRealtimeStarted || typeof db === 'undefined') return;
+  officeContentRealtimeStarted = true;
+  try{
+    db.ref(OFFICE_CONTENT_DB_PATH).on('value', (snap) => {
+      const data = snap.exists() ? normalizeOfficeContentData(snap.val()) : {};
+      officeContent = data;
+      saveOfficeContentToCache();
+      applyOfficeContent();
+    }, (error) => {
+      console.warn('Не вдалося увімкнути синхронізацію офісу', error);
+    });
+  }catch(error){
+    console.warn('Не вдалося увімкнути синхронізацію офісу', error);
+  }
 }
 
 async function loadOfficeContent(){
   officeContent = loadOfficeContentFromCache();
   applyOfficeContent();
   try{
-    const snap = await db.ref('siteContent').get();
+    const snap = await db.ref(OFFICE_CONTENT_DB_PATH).get();
     if(snap.exists()){
-      const data = snap.val() || {};
-      officeContent = data && typeof data === 'object' ? data : {};
+      officeContent = normalizeOfficeContentData(snap.val());
       saveOfficeContentToCache();
       applyOfficeContent();
     }
   }catch(error){
     console.warn('Не вдалося завантажити тексти офісу', error);
   }
+  startOfficeContentRealtime();
 }
 
-function saveOfficeContent(){
+async function saveOfficeContent(){
   saveOfficeContentToCache();
-  try{ return db.ref('siteContent').set(officeContent || {}); }
-  catch(error){ console.warn('Не вдалося зберегти тексти офісу', error); }
+  try{
+    const payload = {...(officeContent || {})};
+    if(typeof firebase !== 'undefined' && firebase.database && firebase.database.ServerValue){
+      payload._updatedAt = firebase.database.ServerValue.TIMESTAMP;
+    }
+    await db.ref(OFFICE_CONTENT_DB_PATH).set(payload);
+    return true;
+  }catch(error){
+    console.warn('Не вдалося зберегти зміни офісу у Firebase', error);
+    alert('Не вдалося зберегти для всіх. Перевір правила Firebase для siteContent. Зміни тимчасово збережені тільки на цьому пристрої.');
+    return false;
+  }
 }
 
+
+
+function getOfficeCustomCards(){
+  const cards = officeContent && Array.isArray(officeContent[OFFICE_CUSTOM_CARDS_KEY]) ? officeContent[OFFICE_CUSTOM_CARDS_KEY] : [];
+  return cards.filter(card => card && card.id);
+}
+
+function setOfficeCustomCards(cards){
+  officeContent[OFFICE_CUSTOM_CARDS_KEY] = Array.isArray(cards) ? cards : [];
+}
+
+function escapeOfficeHtml(value){
+  return String(value ?? '').replace(/[&<>\"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+}
+
+function renderOfficeCustomCards(){
+  const grid = document.querySelector('.overview-grid');
+  if(!grid) return;
+  grid.querySelectorAll('.office-custom-card').forEach(el => el.remove());
+  getOfficeCustomCards().forEach(card => {
+    const div = document.createElement('div');
+    div.className = 'overview-card office-custom-card';
+    div.dataset.officeEditable = 'block';
+    div.dataset.officeKey = 'custom_card_' + card.id;
+    div.innerHTML = `
+      <button type="button" class="office-card-delete-btn" onclick="deleteOfficeOverviewCard('${escapeOfficeHtml(card.id)}')">🗑</button>
+      <button type="button" class="office-section-edit-btn" data-office-section-edit-btn onclick="openOfficeCustomCardTextModal('${escapeOfficeHtml(card.id)}')">✏️ Редагувати</button>
+      <div class="overview-card-title">${escapeOfficeHtml(card.title || 'Нове вікно')}</div>
+      <div class="overview-card-text">${escapeOfficeHtml(card.text || 'Текст вікна')}</div>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+function addOfficeOverviewCard(){
+  if(!adminMode) return;
+  const id = 'card_' + Date.now();
+  const cards = getOfficeCustomCards();
+  cards.push({id, title:'Нове вікно', text:'Впиши сюди потрібний текст'});
+  setOfficeCustomCards(cards);
+  saveOfficeContent();
+  renderOfficeCustomCards();
+  openOfficeCustomCardTextModal(id);
+}
+
+function findOfficeCustomCard(id){
+  return getOfficeCustomCards().find(card => card.id === id) || null;
+}
+
+function openOfficeCustomCardTextModal(id){
+  if(!adminMode) return;
+  const card = findOfficeCustomCard(id);
+  if(!card) return;
+  currentOfficeCardKey = null;
+  currentOfficeCustomCardId = id;
+  document.querySelectorAll('.office-section-editing').forEach(el => el.classList.remove('office-section-editing'));
+  const block = document.querySelector('[data-office-key="custom_card_' + id + '"]');
+  if(block) block.classList.add('office-section-editing');
+  const titleInput = document.getElementById('officeCardTitleInput');
+  const textInput = document.getElementById('officeCardTextInput');
+  if(titleInput) titleInput.value = card.title || '';
+  if(textInput) textInput.value = card.text || '';
+  const modal = document.getElementById('officeCardTextModal');
+  if(modal){
+    modal.style.display = 'flex';
+    if(typeof openOverlayLock === 'function') openOverlayLock();
+    setTimeout(() => { if(titleInput) titleInput.focus(); }, 50);
+  }
+}
+
+function deleteOfficeOverviewCard(id){
+  if(!adminMode) return;
+  if(!confirm('Видалити це вікно?')) return;
+  setOfficeCustomCards(getOfficeCustomCards().filter(card => card.id !== id));
+  saveOfficeContent();
+  renderOfficeCustomCards();
+}
+
+function openOfficeTextModal(el){
+  if(!adminMode || !el) return;
+  currentOfficeTextElement = el;
+  const input = document.getElementById('officeTextInput');
+  if(input) input.value = getOfficeElementValue(el);
+  const modal = document.getElementById('officeTextModal');
+  if(modal){
+    modal.style.display = 'flex';
+    if(typeof openOverlayLock === 'function') openOverlayLock();
+    setTimeout(() => { if(input) input.focus(); }, 50);
+  }
+}
+
+function closeOfficeTextModal(){
+  const modal = document.getElementById('officeTextModal');
+  if(modal) modal.style.display = 'none';
+  currentOfficeTextElement = null;
+  if(typeof closeOverlayLock === 'function') closeOverlayLock();
+}
+
+function handleOfficeTextBackdrop(event){
+  if(event && event.target && event.target.id === 'officeTextModal') closeOfficeTextModal();
+}
+
+async function saveOfficeTextModal(){
+  if(!currentOfficeTextElement) return;
+  const input = document.getElementById('officeTextInput');
+  const newValue = input ? input.value.trim() : '';
+  const key = currentOfficeTextElement.dataset.officeKey;
+  setOfficeElementValue(currentOfficeTextElement, newValue);
+  if(key) officeContent[key] = newValue;
+  await saveOfficeContent();
+  closeOfficeTextModal();
+}
 
 let currentOfficeCardKey = null;
 
@@ -2689,7 +2885,8 @@ function closeOfficeCardTextModal(){
   const modal = document.getElementById('officeCardTextModal');
   if(modal) modal.style.display = 'none';
   currentOfficeCardKey = null;
-  document.querySelectorAll('.overview-card.office-section-editing').forEach(el => el.classList.remove('office-section-editing'));
+  currentOfficeCustomCardId = null;
+  document.querySelectorAll('.overview-card.office-section-editing, .office-custom-card.office-section-editing').forEach(el => el.classList.remove('office-section-editing'));
   if(typeof closeOverlayLock === 'function') closeOverlayLock();
 }
 
@@ -2698,15 +2895,23 @@ function handleOfficeCardTextBackdrop(event){
 }
 
 async function saveOfficeCardTextModal(){
+  const titleInput = document.getElementById('officeCardTitleInput');
+  const textInput = document.getElementById('officeCardTextInput');
+  const newTitle = titleInput ? titleInput.value.trim() : '';
+  const newText = textInput ? textInput.value.trim() : '';
+
+  if(currentOfficeCustomCardId){
+    const cards = getOfficeCustomCards().map(card => card.id === currentOfficeCustomCardId ? {...card, title:newTitle, text:newText} : card);
+    setOfficeCustomCards(cards);
+    await saveOfficeContent();
+    renderOfficeCustomCards();
+    closeOfficeCardTextModal();
+    return;
+  }
+
   if(!currentOfficeCardKey) return;
   const fields = getOfficeCardFields(currentOfficeCardKey);
   if(!fields.title || !fields.text) return;
-
-  const titleInput = document.getElementById('officeCardTitleInput');
-  const textInput = document.getElementById('officeCardTextInput');
-
-  const newTitle = titleInput ? titleInput.value.trim() : '';
-  const newText = textInput ? textInput.value.trim() : '';
 
   setOfficeElementValue(fields.title, newTitle);
   setOfficeElementValue(fields.text, newText);
@@ -2803,13 +3008,7 @@ function initOfficeClickEditor(){
       return;
     }
 
-    const key = el.dataset.officeKey;
-    const oldValue = getOfficeElementValue(el);
-    const newValue = prompt('Введи новий текст:', oldValue);
-    if(newValue === null) return;
-    setOfficeElementValue(el, newValue.trim());
-    officeContent[key] = newValue.trim();
-    saveOfficeContent();
+    openOfficeTextModal(el);
   }, true);
 }
 
