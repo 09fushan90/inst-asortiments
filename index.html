@@ -1544,6 +1544,34 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
   </div>
 </div>
 
+
+<!-- Модалка редагування головного екрана / офісу -->
+<div class="modal" id="officeEditorModal" onclick="handleOfficeEditorBackdrop(event)">
+  <div class="modal-content" style="max-width:520px;">
+    <h3 id="officeEditorTitle" style="margin-top:0;">Редагування</h3>
+
+    <div id="officeTextEditorBox">
+      <textarea id="officeEditorTextarea" placeholder="Введіть текст" style="min-height:150px;resize:vertical;"></textarea>
+    </div>
+
+    <div id="officeImageEditorBox" style="display:none;">
+      <div id="officeImageUploadBox" onclick="chooseOfficeImageFile()" style="width:100%;min-height:170px;border:2px dashed #90ee90;border-radius:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#0b0b0b;color:#90ee90;font-size:18px;font-weight:bold;padding:18px;text-align:center;">
+        + Додати / змінити фото
+      </div>
+      <input type="file" id="officeEditorImageFile" accept="image/*" style="display:none;">
+      <div id="officeImagePreviewWrap" style="display:none;margin-top:12px;">
+        <img id="officeImagePreview" alt="Попередній перегляд" style="width:100%;max-height:260px;object-fit:contain;background:#fff;border-radius:14px;padding:10px;">
+      </div>
+      <div class="office-help">Натисни на поле вище, вибери фото з телефону або компʼютера, потім натисни “Зберегти”.</div>
+    </div>
+
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px;">
+      <button onclick="saveOfficeEditorModal()">Зберегти</button>
+      <button onclick="closeOfficeEditorModal()" style="background:#444;color:#fff;">Скасувати</button>
+    </div>
+  </div>
+</div>
+
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -2693,20 +2721,129 @@ function initOfficeClickEditor(){
     event.stopPropagation();
 
     if(type === 'image'){
-      currentOfficeImageElement = el;
-      officeImageInput.click();
+      openOfficeImageModal(el);
       return;
     }
 
-    const key = el.dataset.officeKey;
-    const oldValue = getOfficeElementValue(el);
-    const newValue = prompt('Введи новий текст:', oldValue);
-    if(newValue === null) return;
-    setOfficeElementValue(el, newValue.trim());
-    officeContent[key] = newValue.trim();
-    saveOfficeContent();
+    openOfficeTextModal(el);
   }, true);
 }
+
+let currentOfficeEditElement = null;
+let currentOfficeEditType = null;
+let pendingOfficeImageDataUrl = '';
+
+function openOfficeTextModal(el){
+  currentOfficeEditElement = el;
+  currentOfficeEditType = 'text';
+  pendingOfficeImageDataUrl = '';
+
+  const modal = document.getElementById('officeEditorModal');
+  const title = document.getElementById('officeEditorTitle');
+  const textBox = document.getElementById('officeTextEditorBox');
+  const imageBox = document.getElementById('officeImageEditorBox');
+  const textarea = document.getElementById('officeEditorTextarea');
+
+  if(title) title.textContent = 'Редагування тексту';
+  if(textBox) textBox.style.display = 'block';
+  if(imageBox) imageBox.style.display = 'none';
+  if(textarea){
+    textarea.value = getOfficeElementValue(el);
+    setTimeout(() => textarea.focus(), 50);
+  }
+  if(modal){
+    modal.style.display = 'flex';
+    if(typeof openOverlayLock === 'function') openOverlayLock();
+  }
+}
+
+function openOfficeImageModal(el){
+  currentOfficeEditElement = el;
+  currentOfficeEditType = 'image';
+  pendingOfficeImageDataUrl = getOfficeElementValue(el);
+
+  const modal = document.getElementById('officeEditorModal');
+  const title = document.getElementById('officeEditorTitle');
+  const textBox = document.getElementById('officeTextEditorBox');
+  const imageBox = document.getElementById('officeImageEditorBox');
+  const previewWrap = document.getElementById('officeImagePreviewWrap');
+  const preview = document.getElementById('officeImagePreview');
+
+  if(title) title.textContent = 'Редагування фото';
+  if(textBox) textBox.style.display = 'none';
+  if(imageBox) imageBox.style.display = 'block';
+  if(preview && pendingOfficeImageDataUrl){
+    preview.src = pendingOfficeImageDataUrl;
+    if(previewWrap) previewWrap.style.display = 'block';
+  }else if(previewWrap){
+    previewWrap.style.display = 'none';
+  }
+  if(modal){
+    modal.style.display = 'flex';
+    if(typeof openOverlayLock === 'function') openOverlayLock();
+  }
+}
+
+function chooseOfficeImageFile(){
+  const input = document.getElementById('officeEditorImageFile');
+  if(input) input.click();
+}
+
+function closeOfficeEditorModal(){
+  const modal = document.getElementById('officeEditorModal');
+  if(modal) modal.style.display = 'none';
+  const input = document.getElementById('officeEditorImageFile');
+  if(input) input.value = '';
+  currentOfficeEditElement = null;
+  currentOfficeEditType = null;
+  pendingOfficeImageDataUrl = '';
+  if(typeof closeOverlayLock === 'function') closeOverlayLock();
+}
+
+function handleOfficeEditorBackdrop(event){
+  if(event && event.target && event.target.id === 'officeEditorModal') closeOfficeEditorModal();
+}
+
+async function saveOfficeEditorModal(){
+  if(!currentOfficeEditElement || !currentOfficeEditType) return;
+  const key = currentOfficeEditElement.dataset.officeKey;
+  if(!key) return;
+
+  if(currentOfficeEditType === 'text'){
+    const textarea = document.getElementById('officeEditorTextarea');
+    const value = textarea ? textarea.value.trim() : '';
+    setOfficeElementValue(currentOfficeEditElement, value);
+    officeContent[key] = value;
+  }
+
+  if(currentOfficeEditType === 'image'){
+    if(!pendingOfficeImageDataUrl){
+      alert('Спочатку вибери фото');
+      return;
+    }
+    setOfficeElementValue(currentOfficeEditElement, pendingOfficeImageDataUrl);
+    officeContent[key] = pendingOfficeImageDataUrl;
+  }
+
+  await saveOfficeContent();
+  closeOfficeEditorModal();
+}
+
+document.addEventListener('change', async function(event){
+  if(!event.target || event.target.id !== 'officeEditorImageFile') return;
+  const file = event.target.files && event.target.files[0];
+  if(!file) return;
+  try{
+    pendingOfficeImageDataUrl = await resizeOfficeImage(file, 1400, 0.86);
+    const preview = document.getElementById('officeImagePreview');
+    const previewWrap = document.getElementById('officeImagePreviewWrap');
+    if(preview) preview.src = pendingOfficeImageDataUrl;
+    if(previewWrap) previewWrap.style.display = 'block';
+  }catch(error){
+    console.error(error);
+    alert('Не вдалося завантажити фото');
+  }
+});
 
 function resizeOfficeImage(file, maxSize = 1400, quality = 0.86){
   return new Promise((resolve, reject) => {
