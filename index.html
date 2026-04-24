@@ -2023,11 +2023,16 @@ const CATALOG_CACHE_KEY = 'inst_asortiments_catalog_cache_v1';
 const CATALOG_CACHE_MAX_AGE = 1000 * 60 * 60 * 24; // 24 години
 
 function getCatalogPayload(){
-  return {
+  const payload = {
     products: Array.isArray(products) ? products : [],
     categories: Array.isArray(categories) ? categories : [],
     mainCategories: Array.isArray(mainCategories) ? mainCategories : []
   };
+  // Важливо: не стираємо редагування головного екрана, коли адмін зберігає товар/категорії.
+  if(typeof officeContent !== "undefined" && officeContent && Object.keys(officeContent).length){
+    payload.siteContent = officeContent;
+  }
+  return payload;
 }
 
 function saveCatalogToCache(payload){
@@ -2624,7 +2629,7 @@ function scrollToProducts(){
 // Редагування текстів і фото на головному екрані через Офіс
 const OFFICE_CONTENT_CACHE_KEY = 'inst_asortiments_office_content_v1';
 const OFFICE_CUSTOM_CARDS_KEY = 'overview_custom_cards';
-const OFFICE_CONTENT_DB_PATH = 'siteContent';
+const OFFICE_CONTENT_DB_PATH = 'catalog/siteContent';
 let officeContent = {};
 let officeContentRealtimeStarted = false;
 let officeEditInitialized = false;
@@ -2728,7 +2733,7 @@ async function saveOfficeContent(){
     return true;
   }catch(error){
     console.warn('Не вдалося зберегти зміни офісу у Firebase', error);
-    alert('Не вдалося зберегти для всіх. Перевір правила Firebase для siteContent. Зміни тимчасово збережені тільки на цьому пристрої.');
+    alert('Не вдалося зберегти для всіх. Перевір правила Firebase для catalog/siteContent. Зміни тимчасово збережені тільки на цьому пристрої.');
     return false;
   }
 }
