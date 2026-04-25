@@ -1,23 +1,16 @@
 <!DOCTYPE html>
+
 <html lang="uk">
 <head>
-
-<base href="/inst-asortiments/">
-
-<link rel="canonical" href="https://09fushan90.github.io/inst-asortiments/">
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-<meta name="google-site-verification" content="R90ZXlLzp037z_5t419ui0wfGpBEPX-HGW7lTw3vT-c">
-
-<meta name="description" content="Inst Asortiments — магазин електро інструменту. Швидке замовлення та доставка по Україні через Telegram.">
-<meta name="author" content="Inst asortiments">
-
-<meta name="robots" content="index, follow">
-
+<base href="/inst-asortiments/"/>
+<link href="https://09fushan90.github.io/inst-asortiments/" rel="canonical"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<meta content="R90ZXlLzp037z_5t419ui0wfGpBEPX-HGW7lTw3vT-c" name="google-site-verification"/>
+<meta content="Inst Asortiments — магазин електро інструменту. Швидке замовлення та доставка по Україні через Telegram." name="description"/>
+<meta content="Inst asortiments" name="author"/>
+<meta content="index, follow" name="robots"/>
 <title>Inst asortiments - магазин електро інструментів</title>
-
 <style>
 #loader{
   position:fixed;
@@ -1206,426 +1199,398 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
   resize:vertical;
 }
 
-</style>
 
+
+/* FIX: hide top circle */
+.topbar button:empty,
+.topbar div:empty {
+    display:none !important;
+}
+
+/* FIX: image fills frame */
+.hero-visual{
+    padding:0 !important;
+    overflow:hidden;
+}
+
+.hero-tool{
+    position:static !important;
+    width:100% !important;
+    height:100% !important;
+    object-fit:cover !important;
+}
+</style>
 <!-- Кнопка кошика -->
-<button id="orderSelectedBtn" onclick="openCartModal()" aria-label="Відкрити кошик" title="Кошик">
-  <span class="cart-icon">🛒</span>
-  <span id="selectedCount" class="selected-count">0</span>
+<button aria-label="Відкрити кошик" id="orderSelectedBtn" onclick="openCartModal()" title="Кошик">
+<span class="cart-icon">🛒</span>
+<span class="selected-count" id="selectedCount">0</span>
 </button>
 </head>
 <body>
-
 <button id="menuBtn" onclick="toggleMenu()">☰</button>
-
 <div id="sideMenu">
 <div id="userBadge" onclick="openProfileModal()">👤 Профіль</div>
-<button id="registerMenuBtn" class="menu-register-btn" onclick="openRegisterModal()">📝 Зареєструватися</button>
-<button id="loginMenuBtn" class="menu-register-btn" onclick="openLoginModal()">🔑 Увійти</button>
-
-<a href="https://www.tiktok.com/@inst_asortiment?_r=1&_t=ZS-95VwGRTQxhV" target="_blank" rel="noopener" class="menu-link-btn">
-  <span class="menu-icon-label">
-    <svg class="menu-svg-icon" viewBox="0 0 24 24" aria-hidden="true">
-      <path fill="currentColor" d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.1V2h-3.12v13.18a2.66 2.66 0 1 1-1.82-2.52V9.5a5.8 5.8 0 1 0 5 5.74V8.57a7.9 7.9 0 0 0 4.62 1.48V6.96c-.31 0-.62-.09-.91-.27Z"/>
-    </svg>
-    <span>TikTok</span>
-  </span>
+<button class="menu-register-btn" id="registerMenuBtn" onclick="openRegisterModal()">📝 Зареєструватися</button>
+<button class="menu-register-btn" id="loginMenuBtn" onclick="openLoginModal()">🔑 Увійти</button>
+<a class="menu-link-btn" href="https://www.tiktok.com/@inst_asortiment?_r=1&amp;_t=ZS-95VwGRTQxhV" rel="noopener" target="_blank">
+<span class="menu-icon-label">
+<svg aria-hidden="true" class="menu-svg-icon" viewbox="0 0 24 24">
+<path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.1V2h-3.12v13.18a2.66 2.66 0 1 1-1.82-2.52V9.5a5.8 5.8 0 1 0 5 5.74V8.57a7.9 7.9 0 0 0 4.62 1.48V6.96c-.31 0-.62-.09-.91-.27Z" fill="currentColor"></path>
+</svg>
+<span>TikTok</span>
+</span>
 </a>
-
-<a href="https://t.me/+YcJzXN4kkpZmMDE6" target="_blank" rel="noopener" class="menu-link-btn">
-  <span class="menu-icon-label">
-    <svg class="menu-svg-icon" viewBox="0 0 24 24" aria-hidden="true">
-      <path fill="currentColor" d="M9.04 15.47 8.9 19.4c.5 0 .72-.22.99-.48l2.37-2.27 4.92 3.6c.9.5 1.54.24 1.78-.83l3.22-15.08h0c.3-1.38-.5-1.92-1.38-1.6L1.9 10c-1.3.5-1.28 1.22-.22 1.54l4.84 1.5L17.76 5.9c.53-.35 1.01-.15.61.2"/>
-    </svg>
-    <span>Новини по магазину</span>
-  </span>
+<a class="menu-link-btn" href="https://t.me/+YcJzXN4kkpZmMDE6" rel="noopener" target="_blank">
+<span class="menu-icon-label">
+<svg aria-hidden="true" class="menu-svg-icon" viewbox="0 0 24 24">
+<path d="M9.04 15.47 8.9 19.4c.5 0 .72-.22.99-.48l2.37-2.27 4.92 3.6c.9.5 1.54.24 1.78-.83l3.22-15.08h0c.3-1.38-.5-1.92-1.38-1.6L1.9 10c-1.3.5-1.28 1.22-.22 1.54l4.84 1.5L17.76 5.9c.53-.35 1.01-.15.61.2" fill="currentColor"></path>
+</svg>
+<span>Новини по магазину</span>
+</span>
 </a>
-
 <button class="menu-copy-btn" onclick="toggleOwnersMenu()">📞 Номери власників</button>
-
-<div id="ownersMenu" class="submenu">
-  <button class="submenu-toggle" onclick="toggleOwnerSection('shopOwnerSection')">Власник магазину</button>
-  <div id="shopOwnerSection" class="owner-section">
-    <button class="owner-contact-btn" onclick="copyPhone('0730510544')">📞 0730510544</button>
-    <a href="https://t.me/Neffoc" target="_blank" rel="noopener" class="owner-telegram-btn">Telegram: @Neffoc</a>
-  </div>
-
-  <button class="submenu-toggle" onclick="toggleOwnerSection('siteOwnerSection')">Власник сайту</button>
-  <div id="siteOwnerSection" class="owner-section">
-    <button class="owner-contact-btn" onclick="copyPhone('0632270785')">📞 0632270785</button>
-    <a href="https://t.me/Fushan90" target="_blank" rel="noopener" class="owner-telegram-btn">Telegram: @Fushan90</a>
-  </div>
+<div class="submenu" id="ownersMenu">
+<button class="submenu-toggle" onclick="toggleOwnerSection('shopOwnerSection')">Власник магазину</button>
+<div class="owner-section" id="shopOwnerSection">
+<button class="owner-contact-btn" onclick="copyPhone('0730510544')">📞 0730510544</button>
+<a class="owner-telegram-btn" href="https://t.me/Neffoc" rel="noopener" target="_blank">Telegram: @Neffoc</a>
 </div>
-
+<button class="submenu-toggle" onclick="toggleOwnerSection('siteOwnerSection')">Власник сайту</button>
+<div class="owner-section" id="siteOwnerSection">
+<button class="owner-contact-btn" onclick="copyPhone('0632270785')">📞 0632270785</button>
+<a class="owner-telegram-btn" href="https://t.me/Fushan90" rel="noopener" target="_blank">Telegram: @Fushan90</a>
+</div>
+</div>
 <button class="menu-register-btn" onclick="openOrderHistoryModal()">📦 Історія замовлень</button>
 <button class="menu-location-btn" onclick="showLocationSoon()">📍 Місцезнаходження магазину</button>
-
-<button id="officeMenuBtn" class="menu-register-btn" onclick="openOffice()" style="display:none;margin-top:auto;">🏢 Офіс</button>
-
+<button class="menu-register-btn" id="officeMenuBtn" onclick="openOffice()" style="display:none;margin-top:auto;">🏢 Офіс</button>
 <p id="copyMessage" style="font-size:13px;color:#90ee90;margin-top:14px;min-height:18px;"></p>
 </div>
-
 <div id="menuOverlay" onclick="toggleMenu()"></div>
-
 <div id="loader">
-  <div class="spinner"></div>
+<div class="spinner"></div>
 </div>
-
 <header class="site-header">
-  <div class="topbar" data-office-editable="block" data-office-key="header_section">
-    <button type="button" class="office-section-edit-btn" data-office-section-edit-btn onclick="toggleOfficeSectionEdit('header_section')">✏️ Редагувати</button>
-    <div class="brand-block">
-      <div class="logo-mark" aria-hidden="true"></div>
-      <div class="brand-text">
-        <div class="brand-title" data-office-editable="text" data-office-key="brand_title">In<span>Sort</span></div>
-        <div class="brand-subtitle" data-office-editable="text" data-office-key="brand_subtitle">Інструменти для професіоналів</div>
-      </div>
-    </div>
-    <div class="header-actions">
-      <div class="header-chip" data-office-editable="text" data-office-key="header_chip_1">Гарантія якості</div>
-      <div class="header-chip" data-office-editable="text" data-office-key="header_chip_2">Швидка доставка</div>
-      <div class="header-chip" data-office-editable="text" data-office-key="header_chip_3">Перевірені бренди</div>
-    </div>
-  </div>
+<div class="topbar" data-office-editable="block" data-office-key="header_section">
+<button class="office-section-edit-btn" data-office-section-edit-btn="" onclick="toggleOfficeSectionEdit('header_section')" type="button">✏️ Редагувати</button>
+<div class="brand-block">
+<div aria-hidden="true" class="logo-mark"></div>
+<div class="brand-text">
+<div class="brand-title" data-office-editable="text" data-office-key="brand_title">In<span>Sort</span></div>
+<div class="brand-subtitle" data-office-editable="text" data-office-key="brand_subtitle">Інструменти для професіоналів</div>
+</div>
+</div>
+<div class="header-actions">
+<div class="header-chip" data-office-editable="text" data-office-key="header_chip_1">Гарантія якості</div>
+<div class="header-chip" data-office-editable="text" data-office-key="header_chip_2">Швидка доставка</div>
+<div class="header-chip" data-office-editable="text" data-office-key="header_chip_3">Перевірені бренди</div>
+</div>
+</div>
 </header>
-
 <section class="hero" data-office-editable="block" data-office-key="hero_section">
-  <button type="button" class="office-section-edit-btn" data-office-section-edit-btn onclick="toggleOfficeSectionEdit('hero_section')">✏️ Редагувати</button>
-  <div class="hero-card">
-    <div class="hero-copy">
-      <div class="hero-kicker" data-office-editable="text" data-office-key="hero_kicker">InSort</div>
-      <h1 data-office-editable="text" data-office-key="hero_title">ІНСТРУМЕНТИ ДЛЯ ПРОФЕСІОНАЛІВ</h1>
-      <p data-office-editable="text" data-office-key="hero_text">Якісний електроінструмент, ручний інструмент та оснащення для дому, майстерні та щоденної роботи.</p>
-      <div class="hero-actions">
-        <button class="hero-primary" onclick="scrollToProducts()" data-office-editable="text" data-office-key="hero_button_primary">Переглянути каталог</button>
-        <button class="hero-secondary" onclick="toggleMenu()" data-office-editable="text" data-office-key="hero_button_secondary">Меню магазину</button>
-      </div>
-      <div class="hero-features">
-        <div class="hero-feature" data-office-editable="text" data-office-key="hero_feature_1">Якість</div>
-        <div class="hero-feature" data-office-editable="text" data-office-key="hero_feature_2">Швидка доставка</div>
-        <div class="hero-feature" data-office-editable="text" data-office-key="hero_feature_3">Популярні бренди</div>
-        <div class="hero-feature" data-office-editable="text" data-office-key="hero_feature_4">Підтримка 24/7</div>
-      </div>
-    </div>
-    <div class="hero-visual">
-      <div class="hero-badge" data-office-editable="text" data-office-key="hero_badge">InSort</div>
-      <div class="hero-glow"></div>
-      <img class="hero-tool" data-office-editable="image" data-office-key="hero_image" src="data:image/svg+xml;utf8,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20480%20420%27%3E%3Crect%20width=%27480%27%20height=%27420%27%20fill=%27none%27/%3E%3Cg%20transform=%27translate(40%2040)%27%3E%3Cpath%20d=%27M60%20150h110l30-28h68c18%200%2030%2012%2030%2030v18c0%2018-12%2030-30%2030h-26v102c0%2010-8%2018-18%2018h-40c-10%200-18-8-18-18v-76h-26l-74%2072c-9%209-24%209-33%200l-18-18c-9-9-9-24%200-33l58-57H60c-22%200-40-18-40-40s18-40%2040-40z%27%20fill=%27%236bff2a%27/%3E%3Cpath%20d=%27M238%20122h54l84-58%2022%2022-55%2084h-75z%27%20fill=%27%23ffffff%27%20opacity=%27.9%27/%3E%3Ccircle%20cx=%27213%27%20cy=%27172%27%20r=%2716%27%20fill=%27%23090f09%27/%3E%3Crect%20x=%2788%27%20y=%27154%27%20width=%2756%27%20height=%2718%27%20rx=%279%27%20fill=%27%23090f09%27/%3E%3Cpath%20d=%27M344%20154h52c18%200%2032%2014%2032%2032s-14%2032-32%2032h-42z%27%20fill=%27%23282828%27/%3E%3Cpath%20d=%27M356%2088l36-34%27%20stroke=%27%236bff2a%27%20stroke-width=%2718%27%20stroke-linecap=%27round%27/%3E%3C/g%3E%3C/svg%3E" alt="Інструмент InSort">
-    </div>
-  </div>
+<button class="office-section-edit-btn" data-office-section-edit-btn="" onclick="toggleOfficeSectionEdit('hero_section')" type="button">✏️ Редагувати</button>
+<div class="hero-card">
+<div class="hero-copy">
+<div class="hero-kicker" data-office-editable="text" data-office-key="hero_kicker">InSort</div>
+<h1 data-office-editable="text" data-office-key="hero_title">ІНСТРУМЕНТИ ДЛЯ ПРОФЕСІОНАЛІВ</h1>
+<p data-office-editable="text" data-office-key="hero_text">Якісний електроінструмент, ручний інструмент та оснащення для дому, майстерні та щоденної роботи.</p>
+<div class="hero-actions">
+<button class="hero-primary" data-office-editable="text" data-office-key="hero_button_primary" onclick="scrollToProducts()">Переглянути каталог</button>
+<button class="hero-secondary" data-office-editable="text" data-office-key="hero_button_secondary" onclick="toggleMenu()">Меню магазину</button>
+</div>
+<div class="hero-features">
+<div class="hero-feature" data-office-editable="text" data-office-key="hero_feature_1">Якість</div>
+<div class="hero-feature" data-office-editable="text" data-office-key="hero_feature_2">Швидка доставка</div>
+<div class="hero-feature" data-office-editable="text" data-office-key="hero_feature_3">Популярні бренди</div>
+<div class="hero-feature" data-office-editable="text" data-office-key="hero_feature_4">Підтримка 24/7</div>
+</div>
+</div>
+<div class="hero-visual">
+<div class="hero-badge" data-office-editable="text" data-office-key="hero_badge">InSort</div>
+<div class="hero-glow"></div>
+<img alt="Інструмент InSort" class="hero-tool" data-office-editable="image" data-office-key="hero_image" src="data:image/svg+xml;utf8,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%270%200%20480%20420%27%3E%3Crect%20width=%27480%27%20height=%27420%27%20fill=%27none%27/%3E%3Cg%20transform=%27translate(40%2040)%27%3E%3Cpath%20d=%27M60%20150h110l30-28h68c18%200%2030%2012%2030%2030v18c0%2018-12%2030-30%2030h-26v102c0%2010-8%2018-18%2018h-40c-10%200-18-8-18-18v-76h-26l-74%2072c-9%209-24%209-33%200l-18-18c-9-9-9-24%200-33l58-57H60c-22%200-40-18-40-40s18-40%2040-40z%27%20fill=%27%236bff2a%27/%3E%3Cpath%20d=%27M238%20122h54l84-58%2022%2022-55%2084h-75z%27%20fill=%27%23ffffff%27%20opacity=%27.9%27/%3E%3Ccircle%20cx=%27213%27%20cy=%27172%27%20r=%2716%27%20fill=%27%23090f09%27/%3E%3Crect%20x=%2788%27%20y=%27154%27%20width=%2756%27%20height=%2718%27%20rx=%279%27%20fill=%27%23090f09%27/%3E%3Cpath%20d=%27M344%20154h52c18%200%2032%2014%2032%2032s-14%2032-32%2032h-42z%27%20fill=%27%23282828%27/%3E%3Cpath%20d=%27M356%2088l36-34%27%20stroke=%27%236bff2a%27%20stroke-width=%2718%27%20stroke-linecap=%27round%27/%3E%3C/g%3E%3C/svg%3E"/>
+</div>
+</div>
 </section>
-
 <section class="overview-grid" data-office-editable="block" data-office-key="overview_section">
-  <button type="button" id="addOverviewCardBtn" class="office-add-card-btn" onclick="addOfficeOverviewCard()">➕ Додати вікно</button>
-  <div class="overview-card" data-office-editable="block" data-office-key="overview_card_1">
-    <button type="button" class="office-section-edit-btn" data-office-section-edit-btn onclick="openOfficeCardTextModal('overview_card_1')">✏️ Редагувати</button>
-    <div class="overview-card-title" data-office-editable="text" data-office-key="overview_title_1">Сучасний дизайн</div>
-    <div class="overview-card-text" data-office-editable="text" data-office-key="overview_text_1">Оновлений темний стиль з фірмовим зеленим акцентом, як на макеті.</div>
-  </div>
-  <div class="overview-card" data-office-editable="block" data-office-key="overview_card_2">
-    <button type="button" class="office-section-edit-btn" data-office-section-edit-btn onclick="openOfficeCardTextModal('overview_card_2')">✏️ Редагувати</button>
-    <div class="overview-card-title" data-office-editable="text" data-office-key="overview_title_2">Усі функції збережені</div>
-    <div class="overview-card-text" data-office-editable="text" data-office-key="overview_text_2">Кошик, пошук, категорії, адмінка, Firebase та замовлення працюють як раніше.</div>
-  </div>
-  <div class="overview-card" data-office-editable="block" data-office-key="overview_card_3">
-    <button type="button" class="office-section-edit-btn" data-office-section-edit-btn onclick="openOfficeCardTextModal('overview_card_3')">✏️ Редагувати</button>
-    <div class="overview-card-title" data-office-editable="text" data-office-key="overview_title_3">Фокус на продаж</div>
-    <div class="overview-card-text" data-office-editable="text" data-office-key="overview_text_3">Великий перший екран і контрастні кнопки краще ведуть людину до каталогу.</div>
-  </div>
-  <div class="overview-card" data-office-editable="block" data-office-key="overview_card_4">
-    <button type="button" class="office-section-edit-btn" data-office-section-edit-btn onclick="openOfficeCardTextModal('overview_card_4')">✏️ Редагувати</button>
-    <div class="overview-card-title" data-office-editable="text" data-office-key="overview_title_4">Адаптація під телефон</div>
-    <div class="overview-card-text" data-office-editable="text" data-office-key="overview_text_4">Новий вигляд акуратно підлаштовується під мобільний екран.</div>
-  </div>
+<button class="office-add-card-btn" id="addOverviewCardBtn" onclick="addOfficeOverviewCard()" type="button">➕ Додати вікно</button>
+<div class="overview-card" data-office-editable="block" data-office-key="overview_card_1">
+<button class="office-section-edit-btn" data-office-section-edit-btn="" onclick="openOfficeCardTextModal('overview_card_1')" type="button">✏️ Редагувати</button>
+<div class="overview-card-title" data-office-editable="text" data-office-key="overview_title_1">Сучасний дизайн</div>
+<div class="overview-card-text" data-office-editable="text" data-office-key="overview_text_1">Оновлений темний стиль з фірмовим зеленим акцентом, як на макеті.</div>
+</div>
+<div class="overview-card" data-office-editable="block" data-office-key="overview_card_2">
+<button class="office-section-edit-btn" data-office-section-edit-btn="" onclick="openOfficeCardTextModal('overview_card_2')" type="button">✏️ Редагувати</button>
+<div class="overview-card-title" data-office-editable="text" data-office-key="overview_title_2">Усі функції збережені</div>
+<div class="overview-card-text" data-office-editable="text" data-office-key="overview_text_2">Кошик, пошук, категорії, адмінка, Firebase та замовлення працюють як раніше.</div>
+</div>
+<div class="overview-card" data-office-editable="block" data-office-key="overview_card_3">
+<button class="office-section-edit-btn" data-office-section-edit-btn="" onclick="openOfficeCardTextModal('overview_card_3')" type="button">✏️ Редагувати</button>
+<div class="overview-card-title" data-office-editable="text" data-office-key="overview_title_3">Фокус на продаж</div>
+<div class="overview-card-text" data-office-editable="text" data-office-key="overview_text_3">Великий перший екран і контрастні кнопки краще ведуть людину до каталогу.</div>
+</div>
+<div class="overview-card" data-office-editable="block" data-office-key="overview_card_4">
+<button class="office-section-edit-btn" data-office-section-edit-btn="" onclick="openOfficeCardTextModal('overview_card_4')" type="button">✏️ Редагувати</button>
+<div class="overview-card-title" data-office-editable="text" data-office-key="overview_title_4">Адаптація під телефон</div>
+<div class="overview-card-text" data-office-editable="text" data-office-key="overview_text_4">Новий вигляд акуратно підлаштовується під мобільний екран.</div>
+</div>
 </section>
-
-<div id="topMainCategories" class="top-main-categories"></div>
+<div class="top-main-categories" id="topMainCategories"></div>
 <div class="container">
-  <div class="catalog-shell" id="catalogSection">
-    <div class="catalog-head">
-      <div>
-        <h2 class="catalog-title" data-office-editable="text" data-office-key="catalog_title">Каталог товарів</h2>
-        <div class="catalog-subtitle" data-office-editable="text" data-office-key="catalog_subtitle">Знайди потрібний інструмент через пошук, основні категорії або фільтр.</div>
-      </div>
-      <div style="text-align:center;display:flex;gap:8px;flex-wrap:wrap;">
-        <button id="addProductBtn" style="display:none;" onclick="openAddModal()">Додати товар</button>
-        <button id="manageCategoriesBtn" style="display:none;" onclick="openCategoryModal()">Категорії</button>
-        <button id="manageMainCategoriesBtn" style="display:none;" onclick="openMainCategoryModal()">Осн. категорії</button>
-      </div>
-    </div>
-
-    <div class="search-box">
-      <div class="search-wrapper">
-        <input type="text" id="searchInput" placeholder="Пошук товару..." onkeyup="handleSearch()">
-        <select id="categoryFilter" onchange="filterCategory()">
-          <option value="">Категорії</option>
-        </select>
-      </div>
-      <div id="subCategoryBackWrap" style="display:none;text-align:left;margin:8px 0 0 0;">
-        <button id="subCategoryBackBtn" type="button" onclick="resetSubCategoryFilter()" style="display:flex;align-items:center;justify-content:center;width:50px;height:50px;border-radius:50%;background:#1b1b1b;color:#90ee90;border:1px solid #2f5f2f;font-size:22px;cursor:pointer;">
+<div class="catalog-shell" id="catalogSection">
+<div class="catalog-head">
+<div>
+<h2 class="catalog-title" data-office-editable="text" data-office-key="catalog_title">Каталог товарів</h2>
+<div class="catalog-subtitle" data-office-editable="text" data-office-key="catalog_subtitle">Знайди потрібний інструмент через пошук, основні категорії або фільтр.</div>
+</div>
+<div style="text-align:center;display:flex;gap:8px;flex-wrap:wrap;">
+<button id="addProductBtn" onclick="openAddModal()" style="display:none;">Додати товар</button>
+<button id="manageCategoriesBtn" onclick="openCategoryModal()" style="display:none;">Категорії</button>
+<button id="manageMainCategoriesBtn" onclick="openMainCategoryModal()" style="display:none;">Осн. категорії</button>
+</div>
+</div>
+<div class="search-box">
+<div class="search-wrapper">
+<input id="searchInput" onkeyup="handleSearch()" placeholder="Пошук товару..." type="text"/>
+<select id="categoryFilter" onchange="filterCategory()">
+<option value="">Категорії</option>
+</select>
+</div>
+<div id="subCategoryBackWrap" style="display:none;text-align:left;margin:8px 0 0 0;">
+<button id="subCategoryBackBtn" onclick="resetSubCategoryFilter()" style="display:flex;align-items:center;justify-content:center;width:50px;height:50px;border-radius:50%;background:#1b1b1b;color:#90ee90;border:1px solid #2f5f2f;font-size:22px;cursor:pointer;" type="button">
           ←
         </button>
-      </div>
-    </div>
-
-    <div class="products" id="products"></div>
-  </div>
 </div>
-
+</div>
+<div class="products" id="products"></div>
+</div>
+</div>
 <!-- Модали -->
 <div class="modal" id="viewModal">
-  <div class="modal-content" style="position:relative;">
-
-    <!-- Кнопка влево -->
-    <button onclick="prevImage()" 
-    style="position:absolute;left:-10px;top:45%;font-size:25px;background:none;border:none;color:#90ee90;cursor:pointer;">
+<div class="modal-content" style="position:relative;">
+<!-- Кнопка влево -->
+<button onclick="prevImage()" style="position:absolute;left:-10px;top:45%;font-size:25px;background:none;border:none;color:#90ee90;cursor:pointer;">
     ◀
     </button>
-
-    <!-- Картинка -->
-    <img id="modalImg" onclick="openFullscreen(this.src)" 
-    style="width:100%; aspect-ratio:1/1; object-fit:contain; cursor:pointer;">
-
-    <!-- Кнопка вправо -->
-    <button onclick="nextImage()" 
-    style="position:absolute;right:-10px;top:45%;font-size:25px;background:none;border:none;color:#90ee90;cursor:pointer;">
+<!-- Картинка -->
+<img id="modalImg" onclick="openFullscreen(this.src)" style="width:100%; aspect-ratio:1/1; object-fit:contain; cursor:pointer;"/>
+<!-- Кнопка вправо -->
+<button onclick="nextImage()" style="position:absolute;right:-10px;top:45%;font-size:25px;background:none;border:none;color:#90ee90;cursor:pointer;">
     ▶
     </button>
-
-    <h3 id="modalTitle"></h3>
-    <p id="modalPrice"></p>
-    <p id="modalDesc"></p>
-    <p id="modalCategory"></p>
-
-    <div style="display:flex; gap:5px; margin-top:10px;">
-      <button onclick="closeModal()">Назад</button>
-      <button id="modalOrderBtn" class="order-btn" onclick="addFromView()">Додати в замовлення</button>
-      <button id="editProductBtn" onclick="editFromView()" style="display:none;">Редагувати</button>
-    </div>
-
-  </div>
+<h3 id="modalTitle"></h3>
+<p id="modalPrice"></p>
+<p id="modalDesc"></p>
+<p id="modalCategory"></p>
+<div style="display:flex; gap:5px; margin-top:10px;">
+<button onclick="closeModal()">Назад</button>
+<button class="order-btn" id="modalOrderBtn" onclick="addFromView()">Додати в замовлення</button>
+<button id="editProductBtn" onclick="editFromView()" style="display:none;">Редагувати</button>
 </div>
-
+</div>
+</div>
 <div class="modal" id="editModal">
-  <div class="modal-content">
-    <h3 id="editTitleText">Додати товар</h3>
-    <input type="text" id="editTitle" placeholder="Назва">
-    <input type="number" id="editPrice" placeholder="Ціна">
-    <div id="imageUploadContainer" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px;">
-  <!-- Тут будут превью загруженных фото -->
-  <div id="addImageBtn" style="width:60px; height:60px; border:2px dashed #90ee90; display:flex; justify-content:center; align-items:center; cursor:pointer; font-size:30px; color:#90ee90;">+</div>
+<div class="modal-content">
+<h3 id="editTitleText">Додати товар</h3>
+<input id="editTitle" placeholder="Назва" type="text"/>
+<input id="editPrice" placeholder="Ціна" type="number"/>
+<div id="imageUploadContainer" style="display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px;">
+<!-- Тут будут превью загруженных фото -->
+<div id="addImageBtn" style="width:60px; height:60px; border:2px dashed #90ee90; display:flex; justify-content:center; align-items:center; cursor:pointer; font-size:30px; color:#90ee90;">+</div>
 </div>
-<input type="file" id="editImageFile" accept="image/*" style="display:none;" multiple>
-    <textarea id="editDesc" placeholder="Опис"></textarea>
-   <textarea id="editImageUrl" placeholder="Вставте URL фото (кожне з нового рядка)"></textarea>
+<input accept="image/*" id="editImageFile" multiple="" style="display:none;" type="file"/>
+<textarea id="editDesc" placeholder="Опис"></textarea>
+<textarea id="editImageUrl" placeholder="Вставте URL фото (кожне з нового рядка)"></textarea>
 <button onclick="addImageFromUrl()">Додати фото по URL</button>
-    <select id="editCategory"></select>
-    <select id="editMainCategory"><option value="">Додати в осн. категорію</option></select>
-    <button onclick="saveProduct()">Зберегти</button>
-    <button onclick="closeEditModal()">Скасувати</button>
-    <button id="deleteBtn" onclick="deleteProduct()" style="background:red;color:white;display:none;margin-top:5px;">Видалити</button>
-  </div>
+<select id="editCategory"></select>
+<select id="editMainCategory"><option value="">Додати в осн. категорію</option></select>
+<button onclick="saveProduct()">Зберегти</button>
+<button onclick="closeEditModal()">Скасувати</button>
+<button id="deleteBtn" onclick="deleteProduct()" style="background:red;color:white;display:none;margin-top:5px;">Видалити</button>
 </div>
-
+</div>
 <div class="modal" id="mainCategoryModal">
-  <div class="modal-content">
-    <h3>Основні категорії</h3>
-    <div id="mainCategoryList"></div>
-    <input type="text" id="newMainCategory" placeholder="Назва основної категорії">
-    <button onclick="addMainCategory()">Додати</button>
-    <button onclick="closeMainCategoryModal()">Скасувати</button>
-  </div>
+<div class="modal-content">
+<h3>Основні категорії</h3>
+<div id="mainCategoryList"></div>
+<input id="newMainCategory" placeholder="Назва основної категорії" type="text"/>
+<button onclick="addMainCategory()">Додати</button>
+<button onclick="closeMainCategoryModal()">Скасувати</button>
 </div>
-
+</div>
 <div class="modal" id="categoryModal">
-  <div class="modal-content">
-    <h3>Категорії</h3>
-    <div id="categoryList"></div>
-    <input type="text" id="newCategory" placeholder="Нова категорія">
-    <button onclick="addCategory()">Додати</button>
-    <button onclick="closeCategoryModal()">Скасувати</button>
-  </div>
+<div class="modal-content">
+<h3>Категорії</h3>
+<div id="categoryList"></div>
+<input id="newCategory" placeholder="Нова категорія" type="text"/>
+<button onclick="addCategory()">Додати</button>
+<button onclick="closeCategoryModal()">Скасувати</button>
 </div>
-
+</div>
 <div class="modal" id="cartModal" onclick="handleModalBackdrop(event, 'cartModal', closeCartModal)">
-  <div class="modal-content cart-modal-content">
-    <div class="cart-header">
-      <h3 style="margin:0;">🛒 Кошик</h3>
-      <button onclick="closeCartModal()" style="margin:0;">✕</button>
-    </div>
-    <div id="cartItems" class="cart-items"></div>
-    <div class="cart-summary">
-      <div>Товарів: <span id="cartTotalCount">0</span></div>
-      <div>Сума: <span id="cartTotalPrice">0 грн</span></div>
-    </div>
-    <div class="cart-actions">
-      <button onclick="openCheckoutModal()">Оформити замовлення</button>
-      <button onclick="clearCart()" style="background:#444;color:#fff;">Очистити кошик</button>
-    </div>
-  </div>
+<div class="modal-content cart-modal-content">
+<div class="cart-header">
+<h3 style="margin:0;">🛒 Кошик</h3>
+<button onclick="closeCartModal()" style="margin:0;">✕</button>
 </div>
-
+<div class="cart-items" id="cartItems"></div>
+<div class="cart-summary">
+<div>Товарів: <span id="cartTotalCount">0</span></div>
+<div>Сума: <span id="cartTotalPrice">0 грн</span></div>
+</div>
+<div class="cart-actions">
+<button onclick="openCheckoutModal()">Оформити замовлення</button>
+<button onclick="clearCart()" style="background:#444;color:#fff;">Очистити кошик</button>
+</div>
+</div>
+</div>
 <div class="modal" id="checkoutModal">
-  <div class="modal-content cart-modal-content">
-    <div class="cart-header">
-      <h3 style="margin:0;">📦 Оформлення замовлення</h3>
-      <button onclick="closeCheckoutModal()" style="margin:0;">✕</button>
-    </div>
-    <div class="checkout-grid">
-      <input id="customerName" type="text" placeholder="Ім'я та прізвище">
-      <input id="customerPhone" type="tel" placeholder="Телефон">
-      <input id="customerCity" type="text" placeholder="Місто" class="full">
-      <input id="customerBranch" type="text" placeholder="Відділення / поштомат Нової пошти" class="full">
-      <select id="paymentMethod" class="full">
-        <option value="">Спосіб оплати</option>
-        <option value="Післяплата">Післяплата</option>
-        <option value="Повна оплата">Повна оплата</option>
-      </select>
-      <textarea id="customerComment" class="full" placeholder="Коментар до замовлення"></textarea>
-    </div>
-    <div class="checkout-note">Telegram відправляє замовлення одразу. Instagram і Нова пошта копіюють текст замовлення в буфер обміну.</div>
-    <div class="checkout-actions">
-      <button class="checkout-btn-telegram" onclick="submitOrder('telegram')">Замовити через Telegram</button>
-      <button class="checkout-btn-instagram" onclick="submitOrder('instagram')">Замовити через Instagram</button>
-      <button class="checkout-btn-np" onclick="submitOrder('novaposhta')">Оформити для Нової пошти</button>
-    </div>
-  </div>
+<div class="modal-content cart-modal-content">
+<div class="cart-header">
+<h3 style="margin:0;">📦 Оформлення замовлення</h3>
+<button onclick="closeCheckoutModal()" style="margin:0;">✕</button>
 </div>
-
+<div class="checkout-grid">
+<input id="customerName" placeholder="Ім'я та прізвище" type="text"/>
+<input id="customerPhone" placeholder="Телефон" type="tel"/>
+<input class="full" id="customerCity" placeholder="Місто" type="text"/>
+<input class="full" id="customerBranch" placeholder="Відділення / поштомат Нової пошти" type="text"/>
+<select class="full" id="paymentMethod">
+<option value="">Спосіб оплати</option>
+<option value="Післяплата">Післяплата</option>
+<option value="Повна оплата">Повна оплата</option>
+</select>
+<textarea class="full" id="customerComment" placeholder="Коментар до замовлення"></textarea>
+</div>
+<div class="checkout-note">Telegram відправляє замовлення одразу. Instagram і Нова пошта копіюють текст замовлення в буфер обміну.</div>
+<div class="checkout-actions">
+<button class="checkout-btn-telegram" onclick="submitOrder('telegram')">Замовити через Telegram</button>
+<button class="checkout-btn-instagram" onclick="submitOrder('instagram')">Замовити через Instagram</button>
+<button class="checkout-btn-np" onclick="submitOrder('novaposhta')">Оформити для Нової пошти</button>
+</div>
+</div>
+</div>
 <div class="modal auth-required-modal" id="authRequiredModal">
-  <div class="modal-content">
-    <h3 style="margin-top:0;">Ви ще не зареєструвалися</h3>
-    <p style="color:#fff;">Щоб користуватися кошиком, спочатку потрібно зареєструватися.</p>
-    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-      <button class="register-btn" onclick="openRegisterFromWarning()">Зареєструватися</button>
-      <button onclick="closeAuthRequiredModal()" style="background:#444;color:#fff;">Закрити</button>
-    </div>
-  </div>
+<div class="modal-content">
+<h3 style="margin-top:0;">Ви ще не зареєструвалися</h3>
+<p style="color:#fff;">Щоб користуватися кошиком, спочатку потрібно зареєструватися.</p>
+<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+<button class="register-btn" onclick="openRegisterFromWarning()">Зареєструватися</button>
+<button onclick="closeAuthRequiredModal()" style="background:#444;color:#fff;">Закрити</button>
 </div>
-
+</div>
+</div>
 <div class="modal" id="registerModal" onclick="handleModalBackdrop(event, 'registerModal', closeRegisterModal)">
-  <div class="modal-content">
-    <h3 style="margin-top:0;">Реєстрація</h3>
-    <input type="text" id="registerName" placeholder="Ім'я">
-    <input type="email" id="registerEmail" placeholder="Електронна пошта">
-    <input type="password" id="registerPassword" placeholder="Створіть надійний пароль">
-    <div class="password-hint">Мінімум 8 символів, велика літера і цифра.</div>
-    <div id="registerStatus"></div>
-    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-      <button class="register-btn" onclick="registerUser()">Зареєструватися</button>
-      <button class="google-auth-btn" onclick="signInWithGoogle()"><span class="google-icon" aria-hidden="true"><svg viewBox="0 0 48 48" width="20" height="20"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.654 32.657 29.207 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.27 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.27 4 24 4c-7.682 0-14.347 4.337-17.694 10.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.197l-6.19-5.238C29.143 35.091 26.715 36 24 36c-5.186 0-9.625-3.329-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.05 12.05 0 0 1-4.084 5.565l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg></span> Продовжити через Google</button>
-      <button onclick="closeRegisterModal()" style="background:#444;color:#fff;">Скасувати</button>
-    </div>
-  </div>
+<div class="modal-content">
+<h3 style="margin-top:0;">Реєстрація</h3>
+<input id="registerName" placeholder="Ім'я" type="text"/>
+<input id="registerEmail" placeholder="Електронна пошта" type="email"/>
+<input id="registerPassword" placeholder="Створіть надійний пароль" type="password"/>
+<div class="password-hint">Мінімум 8 символів, велика літера і цифра.</div>
+<div id="registerStatus"></div>
+<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+<button class="register-btn" onclick="registerUser()">Зареєструватися</button>
+<button class="google-auth-btn" onclick="signInWithGoogle()"><span aria-hidden="true" class="google-icon"><svg height="20" viewbox="0 0 48 48" width="20"><path d="M43.611 20.083H42V20H24v8h11.303C33.654 32.657 29.207 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.27 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z" fill="#FFC107"></path><path d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.27 4 24 4c-7.682 0-14.347 4.337-17.694 10.691z" fill="#FF3D00"></path><path d="M24 44c5.166 0 9.86-1.977 13.409-5.197l-6.19-5.238C29.143 35.091 26.715 36 24 36c-5.186 0-9.625-3.329-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z" fill="#4CAF50"></path><path d="M43.611 20.083H42V20H24v8h11.303a12.05 12.05 0 0 1-4.084 5.565l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z" fill="#1976D2"></path></svg></span> Продовжити через Google</button>
+<button onclick="closeRegisterModal()" style="background:#444;color:#fff;">Скасувати</button>
 </div>
-
+</div>
+</div>
 <div class="modal" id="loginModal" onclick="handleModalBackdrop(event, 'loginModal', closeLoginModal)">
-  <div class="modal-content">
-    <h3 style="margin-top:0;">Вхід</h3>
-    <input type="email" id="loginEmail" placeholder="Електронна пошта">
-    <input type="password" id="loginPassword" placeholder="Пароль">
-    <div id="loginStatus" style="font-size:13px;color:#90ee90;min-height:18px;margin-top:8px;"></div>
-    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-      <button class="register-btn" onclick="loginUser()">Увійти</button>
-      <button class="google-auth-btn" onclick="signInWithGoogle()"><span class="google-icon" aria-hidden="true"><svg viewBox="0 0 48 48" width="20" height="20"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.654 32.657 29.207 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.27 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"/><path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.27 4 24 4c-7.682 0-14.347 4.337-17.694 10.691z"/><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.197l-6.19-5.238C29.143 35.091 26.715 36 24 36c-5.186 0-9.625-3.329-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"/><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.05 12.05 0 0 1-4.084 5.565l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"/></svg></span> Увійти через Google</button>
-      <button onclick="closeLoginModal()" style="background:#444;color:#fff;">Скасувати</button>
-    </div>
-  </div>
+<div class="modal-content">
+<h3 style="margin-top:0;">Вхід</h3>
+<input id="loginEmail" placeholder="Електронна пошта" type="email"/>
+<input id="loginPassword" placeholder="Пароль" type="password"/>
+<div id="loginStatus" style="font-size:13px;color:#90ee90;min-height:18px;margin-top:8px;"></div>
+<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+<button class="register-btn" onclick="loginUser()">Увійти</button>
+<button class="google-auth-btn" onclick="signInWithGoogle()"><span aria-hidden="true" class="google-icon"><svg height="20" viewbox="0 0 48 48" width="20"><path d="M43.611 20.083H42V20H24v8h11.303C33.654 32.657 29.207 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.27 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z" fill="#FFC107"></path><path d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.27 4 24 4c-7.682 0-14.347 4.337-17.694 10.691z" fill="#FF3D00"></path><path d="M24 44c5.166 0 9.86-1.977 13.409-5.197l-6.19-5.238C29.143 35.091 26.715 36 24 36c-5.186 0-9.625-3.329-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z" fill="#4CAF50"></path><path d="M43.611 20.083H42V20H24v8h11.303a12.05 12.05 0 0 1-4.084 5.565l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z" fill="#1976D2"></path></svg></span> Увійти через Google</button>
+<button onclick="closeLoginModal()" style="background:#444;color:#fff;">Скасувати</button>
 </div>
-
+</div>
+</div>
 <div class="modal auth-required-modal" id="authRequiredModal">
-  <div class="modal-content">
-    <h3 style="margin-top:0;">Ви ще не зареєструвалися</h3>
-    <p style="color:#fff;">Щоб користуватися кошиком, спочатку потрібно зареєструватися.</p>
-    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-      <button class="register-btn" onclick="openRegisterFromWarning()">Зареєструватися</button>
-      <button onclick="closeAuthRequiredModal()" style="background:#444;color:#fff;">Закрити</button>
-    </div>
-  </div>
+<div class="modal-content">
+<h3 style="margin-top:0;">Ви ще не зареєструвалися</h3>
+<p style="color:#fff;">Щоб користуватися кошиком, спочатку потрібно зареєструватися.</p>
+<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+<button class="register-btn" onclick="openRegisterFromWarning()">Зареєструватися</button>
+<button onclick="closeAuthRequiredModal()" style="background:#444;color:#fff;">Закрити</button>
 </div>
-
+</div>
+</div>
 <div class="modal" id="registerModal" onclick="handleModalBackdrop(event, 'registerModal', closeRegisterModal)">
-  <div class="modal-content">
-    <h3 style="margin-top:0;">Реєстрація</h3>
-    <input type="text" id="registerName" placeholder="Ім'я">
-    <input type="email" id="registerEmail" placeholder="Електронна пошта">
-    <input type="password" id="registerPassword" placeholder="Створіть надійний пароль">
-    <div class="password-hint">Мінімум 8 символів, велика літера і цифра.</div>
-    <div id="registerStatus"></div>
-    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-      <button class="register-btn" onclick="registerUser()">Зареєструватися</button>
-      <button onclick="closeRegisterModal()" style="background:#444;color:#fff;">Скасувати</button>
-    </div>
-  </div>
+<div class="modal-content">
+<h3 style="margin-top:0;">Реєстрація</h3>
+<input id="registerName" placeholder="Ім'я" type="text"/>
+<input id="registerEmail" placeholder="Електронна пошта" type="email"/>
+<input id="registerPassword" placeholder="Створіть надійний пароль" type="password"/>
+<div class="password-hint">Мінімум 8 символів, велика літера і цифра.</div>
+<div id="registerStatus"></div>
+<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+<button class="register-btn" onclick="registerUser()">Зареєструватися</button>
+<button onclick="closeRegisterModal()" style="background:#444;color:#fff;">Скасувати</button>
 </div>
-
+</div>
+</div>
 <div class="modal" id="loginModal" onclick="handleModalBackdrop(event, 'loginModal', closeLoginModal)">
-  <div class="modal-content">
-    <h3 style="margin-top:0;">Вхід</h3>
-    <input type="email" id="loginEmail" placeholder="Електронна пошта">
-    <input type="password" id="loginPassword" placeholder="Пароль">
-    <div id="loginStatus"></div>
-    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-      <button class="register-btn" onclick="loginUser()">Увійти</button>
-      <button onclick="closeLoginModal()" style="background:#444;color:#fff;">Скасувати</button>
-    </div>
-  </div>
+<div class="modal-content">
+<h3 style="margin-top:0;">Вхід</h3>
+<input id="loginEmail" placeholder="Електронна пошта" type="email"/>
+<input id="loginPassword" placeholder="Пароль" type="password"/>
+<div id="loginStatus"></div>
+<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+<button class="register-btn" onclick="loginUser()">Увійти</button>
+<button onclick="closeLoginModal()" style="background:#444;color:#fff;">Скасувати</button>
 </div>
-
+</div>
+</div>
 <div class="modal" id="profileModal">
-  <div class="modal-content">
-    <h3 style="margin-top:0;">Профіль</h3>
-    <button onclick="confirmLogout()" style="background:#ff3b30;color:#fff;">Вийти</button>
-    <button onclick="closeProfileModal()" style="background:#444;color:#fff;margin-top:8px;">Закрити</button>
-  </div>
+<div class="modal-content">
+<h3 style="margin-top:0;">Профіль</h3>
+<button onclick="confirmLogout()" style="background:#ff3b30;color:#fff;">Вийти</button>
+<button onclick="closeProfileModal()" style="background:#444;color:#fff;margin-top:8px;">Закрити</button>
 </div>
-
+</div>
 <div class="modal" id="confirmLogoutModal">
-  <div class="modal-content">
-    <h3 style="margin-top:0;">Ви впевнені?</h3>
-    <button onclick="logoutUser()" style="background:#ff3b30;color:#fff;">Вийти</button>
-    <button onclick="closeConfirmLogout()" style="background:#444;color:#fff;margin-top:8px;">Скасувати</button>
-  </div>
+<div class="modal-content">
+<h3 style="margin-top:0;">Ви впевнені?</h3>
+<button onclick="logoutUser()" style="background:#ff3b30;color:#fff;">Вийти</button>
+<button onclick="closeConfirmLogout()" style="background:#444;color:#fff;margin-top:8px;">Скасувати</button>
 </div>
-
+</div>
 <div class="modal" id="orderHistoryModal">
-  <div class="modal-content">
-    <h3 style="margin-top:0;">Історія замовлень</h3>
-    <div id="orderHistoryList" class="order-history-list"></div>
-    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;">
-      <button onclick="clearOrderHistory()" style="background:#444;color:#fff;">Очистити історію</button>
-      <button onclick="closeOrderHistoryModal()" style="background:#90ee90;color:#000;">Закрити</button>
-    </div>
-  </div>
+<div class="modal-content">
+<h3 style="margin-top:0;">Історія замовлень</h3>
+<div class="order-history-list" id="orderHistoryList"></div>
+<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;">
+<button onclick="clearOrderHistory()" style="background:#444;color:#fff;">Очистити історію</button>
+<button onclick="closeOrderHistoryModal()" style="background:#90ee90;color:#000;">Закрити</button>
 </div>
-
-
+</div>
 </div>
 
 <!-- Модалка для редагування маленьких вікон з двома строками -->
 <div class="modal" id="officeCardTextModal" onclick="handleOfficeCardTextBackdrop(event)">
-  <div class="modal-content">
-    <h3 style="margin-top:0;">Редагувати вікно</h3>
-    <input type="text" id="officeCardTitleInput" placeholder="Заголовок">
-    <textarea id="officeCardTextInput" placeholder="Текст"></textarea>
-    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;">
-      <button onclick="saveOfficeCardTextModal()">Зберегти</button>
-      <button onclick="closeOfficeCardTextModal()" style="background:#444;color:#fff;">Скасувати</button>
-    </div>
-  </div>
+<div class="modal-content">
+<h3 style="margin-top:0;">Редагувати вікно</h3>
+<input id="officeCardTitleInput" placeholder="Заголовок" type="text"/>
+<textarea id="officeCardTextInput" placeholder="Текст"></textarea>
+<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;">
+<button onclick="saveOfficeCardTextModal()">Зберегти</button>
+<button onclick="closeOfficeCardTextModal()" style="background:#444;color:#fff;">Скасувати</button>
 </div>
-
+</div>
+</div>
 <div class="modal" id="officeTextModal" onclick="handleOfficeTextBackdrop(event)">
-  <div class="modal-content">
-    <h3 style="margin-top:0;">Редагувати текст</h3>
-    <textarea id="officeTextInput" placeholder="Текст"></textarea>
-    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;">
-      <button onclick="saveOfficeTextModal()">Зберегти</button>
-      <button onclick="closeOfficeTextModal()" style="background:#444;color:#fff;">Скасувати</button>
-    </div>
-  </div>
+<div class="modal-content">
+<h3 style="margin-top:0;">Редагувати текст</h3>
+<textarea id="officeTextInput" placeholder="Текст"></textarea>
+<div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;">
+<button onclick="saveOfficeTextModal()">Зберегти</button>
+<button onclick="closeOfficeTextModal()" style="background:#444;color:#fff;">Скасувати</button>
 </div>
-
+</div>
+</div>
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
