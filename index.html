@@ -1290,6 +1290,26 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
   height:85%;
   object-fit:contain;
 }
+
+
+.logo-mark{
+  display:flex !important;
+  width:80px !important;
+  height:80px !important;
+  min-width:80px !important;
+  border-radius:20px;
+  background:linear-gradient(135deg,#6bff2a,#49d71c) !important;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 8px 24px rgba(107,255,42,.25);
+}
+
+.logo-mark::after{
+  content:"I";
+  font-size:40px;
+  font-weight:900;
+  color:#071007;
+}
 </style>
 <!-- Кнопка кошика -->
 <button aria-label="Відкрити кошик" id="orderSelectedBtn" onclick="openCartModal()" title="Кошик">
@@ -1346,7 +1366,7 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
 <button class="office-section-edit-btn" data-office-section-edit-btn="" onclick="toggleOfficeSectionEdit('header_section')" type="button">✏️ Редагувати</button>
 <div class="brand-block">
 <div aria-hidden="true" class="logo-mark"></div>
-<div class="logo-upload" data-office-logo="true"><img alt="Логотип магазину" id="customLogo" style="display:none;"/><input accept="image/*" id="logoInput" style="display:none;" type="file"/><button class="logo-change-btn" id="changeLogoBtn" onclick="document.getElementById('logoInput').click()" type="button">✏️ Логотип</button></div><div class="brand-text">
+<div class="brand-text">
 <div class="brand-title" data-office-editable="text" data-office-key="brand_title">In<span>Sort</span></div>
 <div class="brand-subtitle" data-office-editable="text" data-office-key="brand_subtitle">Інструменти для професіоналів</div>
 </div>
