@@ -1219,6 +1219,71 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
     height:100% !important;
     object-fit:cover !important;
 }
+
+
+/* ===== Логотип біля назви: змінюється тільки в Офісі ===== */
+.logo-upload{
+  width:92px;
+  height:92px;
+  min-width:92px;
+  border-radius:22px;
+  border:1px solid rgba(107,255,42,.35);
+  background:rgba(0,0,0,.35);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 0 24px rgba(107,255,42,.18);
+}
+
+.logo-upload img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  padding:6px;
+  border-radius:18px;
+}
+
+.logo-change-btn{
+  display:none !important;
+  position:absolute;
+  left:50%;
+  bottom:5px;
+  transform:translateX(-50%);
+  width:auto;
+  min-width:74px;
+  padding:5px 8px !important;
+  margin:0 !important;
+  border-radius:999px !important;
+  font-size:11px !important;
+  font-weight:900 !important;
+  z-index:5;
+  background:#6bff2a !important;
+  color:#071007 !important;
+  box-shadow:0 6px 14px rgba(0,0,0,.35);
+}
+
+.office-active .logo-change-btn{
+  display:block !important;
+}
+
+.office-active .logo-upload{
+  outline:2px dashed rgba(107,255,42,.85);
+  outline-offset:4px;
+}
+
+@media(max-width:700px){
+  .logo-upload{
+    width:70px;
+    height:70px;
+    min-width:70px;
+    border-radius:18px;
+  }
+  .brand-block{
+    gap:10px;
+  }
+}
 </style>
 <!-- Кнопка кошика -->
 <button aria-label="Відкрити кошик" id="orderSelectedBtn" onclick="openCartModal()" title="Кошик">
@@ -1275,7 +1340,7 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
 <button class="office-section-edit-btn" data-office-section-edit-btn="" onclick="toggleOfficeSectionEdit('header_section')" type="button">✏️ Редагувати</button>
 <div class="brand-block">
 <div aria-hidden="true" class="logo-mark"></div>
-<div class="brand-text">
+<div class="logo-upload" data-office-logo="true"><img alt="Логотип магазину" id="customLogo" style="display:none;"/><input accept="image/*" id="logoInput" style="display:none;" type="file"/><button class="logo-change-btn" id="changeLogoBtn" onclick="document.getElementById('logoInput').click()" type="button">✏️ Логотип</button></div><div class="brand-text">
 <div class="brand-title" data-office-editable="text" data-office-key="brand_title">In<span>Sort</span></div>
 <div class="brand-subtitle" data-office-editable="text" data-office-key="brand_subtitle">Інструменти для професіоналів</div>
 </div>
@@ -1568,7 +1633,6 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
 </div>
 </div>
 </div>
-
 <!-- Модалка для редагування маленьких вікон з двома строками -->
 <div class="modal" id="officeCardTextModal" onclick="handleOfficeCardTextBackdrop(event)">
 <div class="modal-content">
@@ -1595,7 +1659,6 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-
 <script>
 
 const USER_STORAGE_KEY = 'inst_asortiments_user';
@@ -3441,19 +3504,17 @@ function isUserRegistered(){
 }
 
 </script>
-
-<div id="fullscreenViewer" class="fullscreen-viewer" onclick="handleFullscreenBackdrop(event)">
-  <button class="fullscreen-close" onclick="closeFullscreen()">✕</button>
-  <div class="fullscreen-image-wrap" id="fullscreenImageWrap">
-    <img id="fullscreenImg" class="fullscreen-image" alt="Збільшене фото товару">
-    <div class="fullscreen-hint">Коліщатко / pinch / подвійний дотик для зуму</div>
-    <div class="fullscreen-zoom-controls">
-      <button type="button" class="fullscreen-zoom-btn" onclick="zoomInImage(event)" aria-label="Збільшити">+</button>
-      <button type="button" class="fullscreen-zoom-btn" onclick="zoomOutImage(event)" aria-label="Зменшити">−</button>
-    </div>
-  </div>
+<div class="fullscreen-viewer" id="fullscreenViewer" onclick="handleFullscreenBackdrop(event)">
+<button class="fullscreen-close" onclick="closeFullscreen()">✕</button>
+<div class="fullscreen-image-wrap" id="fullscreenImageWrap">
+<img alt="Збільшене фото товару" class="fullscreen-image" id="fullscreenImg"/>
+<div class="fullscreen-hint">Коліщатко / pinch / подвійний дотик для зуму</div>
+<div class="fullscreen-zoom-controls">
+<button aria-label="Збільшити" class="fullscreen-zoom-btn" onclick="zoomInImage(event)" type="button">+</button>
+<button aria-label="Зменшити" class="fullscreen-zoom-btn" onclick="zoomOutImage(event)" type="button">−</button>
 </div>
-
+</div>
+</div>
 <script>
 let scale = 1;
 let posX = 0;
@@ -3666,7 +3727,6 @@ async function uploadImagesToFirebase(files){
 }
 
 </script>
-
 <script>
 (function(){
   if (window.__firebaseAuthPatched) return;
@@ -3952,7 +4012,6 @@ async function uploadImagesToFirebase(files){
   }
 })();
 </script>
-
 <script>
 function handleModalBackdrop(event, modalId, closeFn){
   const modal = document.getElementById(modalId);
@@ -3962,7 +4021,6 @@ function handleModalBackdrop(event, modalId, closeFn){
   }
 }
 </script>
-
 <script>
 (function(){
   function updateOfficeButton(){
@@ -4009,6 +4067,70 @@ function handleModalBackdrop(event, modalId, closeFn){
     document.addEventListener('DOMContentLoaded', updateOfficeButton);
   }else{
     updateOfficeButton();
+  }
+})();
+</script>
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+ const input=document.getElementById("logoInput");
+ const img=document.getElementById("customLogo");
+ if(input){
+  input.addEventListener("change",e=>{
+    const file=e.target.files[0];
+    if(file){
+      const reader=new FileReader();
+      reader.onload=()=>{
+        img.src=reader.result;
+        img.style.display="block";
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+ }
+});
+</script>
+<script>
+(function(){
+  const LOGO_STORAGE_KEY = "insort_header_logo";
+
+  function initHeaderLogo(){
+    const input = document.getElementById("logoInput");
+    const img = document.getElementById("customLogo");
+    const box = document.querySelector(".logo-upload");
+    const saved = localStorage.getItem(LOGO_STORAGE_KEY);
+
+    if(saved && img){
+      img.src = saved;
+      img.style.display = "block";
+      if(box) box.classList.add("has-logo");
+    }
+
+    if(input && img){
+      input.addEventListener("change", function(e){
+        if(!document.body.classList.contains("office-active")){
+          input.value = "";
+          return;
+        }
+
+        const file = e.target.files && e.target.files[0];
+        if(!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(){
+          img.src = reader.result;
+          img.style.display = "block";
+          localStorage.setItem(LOGO_STORAGE_KEY, reader.result);
+          if(box) box.classList.add("has-logo");
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", initHeaderLogo);
+  } else {
+    initHeaderLogo();
   }
 })();
 </script>
