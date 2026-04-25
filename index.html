@@ -2206,8 +2206,15 @@ function populateCategorySelects(){
 
 function orderProduct(id){
   if(!requireRegistration()) return;
-  addToCart(id);
-  showAddedToCart();
+  const wasInCart = selectedProducts.some(item => String(item.id) === String(id));
+
+  // Перший клік додає товар у замовлення, другий клік прибирає його.
+  toggleSelectProduct(id);
+
+  // Анімацію кошика показуємо тільки коли товар додали, а не коли прибрали.
+  if(!wasInCart){
+    showAddedToCart();
+  }
 }
 
 function quickOrderProduct(title, price){
