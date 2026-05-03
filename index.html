@@ -1564,7 +1564,7 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
 <div class="modal auth-required-modal" id="authRequiredModal">
 <div class="modal-content">
 <h3 style="margin-top:0;">Ви ще не зареєструвалися</h3>
-<p style="color:#fff;">Щоб користуватися кошиком, спочатку потрібно зареєструватися.</p>
+<p style="color:#fff;">Можна додавати товар і без реєстрації. Але гостьовий кошик збережеться тільки в цьому браузері.</p>
 <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
 <button class="register-btn" onclick="openRegisterFromWarning()">Зареєструватися</button>
 <button onclick="closeAuthRequiredModal()" style="background:#444;color:#fff;">Закрити</button>
@@ -1602,7 +1602,7 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
 <div class="modal auth-required-modal" id="authRequiredModal">
 <div class="modal-content">
 <h3 style="margin-top:0;">Ви ще не зареєструвалися</h3>
-<p style="color:#fff;">Щоб користуватися кошиком, спочатку потрібно зареєструватися.</p>
+<p style="color:#fff;">Можна додавати товар і без реєстрації. Але гостьовий кошик збережеться тільки в цьому браузері.</p>
 <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
 <button class="register-btn" onclick="openRegisterFromWarning()">Зареєструватися</button>
 <button onclick="closeAuthRequiredModal()" style="background:#444;color:#fff;">Закрити</button>
@@ -1982,9 +1982,9 @@ function loginUser(){
 }
 
 function requireRegistration(){
-  if(isUserLoggedIn()) return true;
-  openAuthRequiredModal();
-  return false;
+  // Тепер реєстрація НЕ обов'язкова для кошика.
+  // Гість може додавати товар, але його кошик зберігається тільки в цьому браузері.
+  return true;
 }
 
 function getOrderHistory(){
@@ -2501,7 +2501,6 @@ function editFromView(){
 }
 
 function addFromView(){
-  if(!requireRegistration()) return;
   const btn = document.getElementById('modalOrderBtn');
   toggleSelectProduct(currentProductId);
   animateOrderButton(btn);
@@ -3107,9 +3106,12 @@ function resizeOfficeImage(file, maxSize = 1400, quality = 0.86){
 /// масив товарів у кошику
 function getCartStorageKey(){
   try{
-    if(typeof getRegisteredUser === 'function'){
+    // Зареєстрований і залогінений користувач має свій окремий кошик.
+    // Незалогінений користувач завжди отримує гостьовий кошик тільки для цього браузера.
+    const loggedIn = (typeof isUserLoggedIn === 'function') ? isUserLoggedIn() : false;
+    if(loggedIn && typeof getRegisteredUser === 'function'){
       const user = getRegisteredUser();
-      if(user && (user.uid || user.email)) return CART_STORAGE_KEY + '_' + (user.uid || user.email);
+      if(user && (user.uid || user.email)) return CART_STORAGE_KEY + '_user_' + (user.uid || user.email);
     }
   }catch(error){}
   return CART_STORAGE_KEY + '_guest';
@@ -3193,8 +3195,7 @@ function removeFromCart(id, rerenderCart = false) {
 }
 
 function toggleSelectProduct(id) {
-  if(!requireRegistration()) return;
-const existing = selectedProducts.find(x => String(x.id) === String(id));
+  const existing = selectedProducts.find(x => String(x.id) === String(id));
   if(existing){
     removeFromCart(id);
   } else {
@@ -3982,9 +3983,9 @@ async function uploadImagesToFirebase(files){
   };
 
   window.requireRegistration = function(){
-    if(currentFirebaseUser) return true;
-    if(typeof openAuthRequiredModal === 'function') openAuthRequiredModal();
-    return false;
+    // Firebase-версія: кошик дозволений і для гостей.
+    // Якщо currentFirebaseUser є — буде user-кошик, якщо немає — guest-кошик.
+    return true;
   };
 
   function patchOrderHistoryForFirebaseUser(){
