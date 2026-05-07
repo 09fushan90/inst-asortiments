@@ -1376,7 +1376,8 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
 
 
 
-/* ===== Рекламні фото під віконцями ===== */
+
+/* ===== Рекламні фото під віконцями: слайдер ===== */
 .ads-section{
   width:100%;
   max-width:1300px;
@@ -1396,21 +1397,35 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
   display:flex;
 }
 .ads-add-btn{
-  padding:12px 16px;
-  border-radius:14px;
+  padding:13px 18px;
+  border-radius:16px;
   font-weight:900;
   background:linear-gradient(135deg,var(--accent),#49d71c);
   color:#071007;
   box-shadow:0 10px 24px rgba(0,0,0,.35);
 }
-.ads-list{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:16px;
+.ads-slider{
+  position:relative;
+  width:100%;
+}
+.ads-viewport{
+  width:100%;
+  overflow:hidden;
+  border-radius:28px;
+}
+.ads-track{
+  display:flex;
+  width:100%;
+  transition:transform .45s ease;
+  will-change:transform;
+}
+.ad-slide{
+  flex:0 0 100%;
+  width:100%;
 }
 .ad-card{
   width:100%;
-  min-height:180px;
+  min-height:230px;
   border-radius:28px;
   background:linear-gradient(135deg,#101010,#1a1a1a);
   border:1px solid rgba(107,255,42,.18);
@@ -1423,24 +1438,26 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
   content:"";
   position:absolute;
   inset:0;
-  background:radial-gradient(circle at top right, rgba(107,255,42,.18), transparent 35%);
+  background:
+    radial-gradient(circle at top right, rgba(107,255,42,.20), transparent 35%),
+    linear-gradient(90deg, rgba(0,0,0,.10), rgba(0,0,0,.38));
   pointer-events:none;
   z-index:1;
 }
 .ad-card img{
   width:100%;
-  height:260px;
+  height:320px;
   object-fit:cover;
   display:block;
   background:#fff;
 }
 .ad-card-placeholder{
-  min-height:180px;
+  min-height:230px;
   display:flex;
   align-items:center;
   justify-content:center;
   text-align:center;
-  padding:30px;
+  padding:34px;
   position:relative;
   z-index:2;
 }
@@ -1494,13 +1511,111 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
   white-space:nowrap;
   text-overflow:ellipsis;
 }
+.ads-arrow{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:5;
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  margin:0;
+  padding:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,.74);
+  color:#6bff2a;
+  border:1px solid rgba(107,255,42,.35);
+  box-shadow:0 10px 24px rgba(0,0,0,.35);
+  font-size:28px;
+}
+.ads-arrow:hover{
+  background:#111;
+}
+.ads-arrow-left{left:12px;}
+.ads-arrow-right{right:12px;}
+.ads-dots{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  margin-top:10px;
+}
+.ads-dot{
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#2b3a2b;
+  border:1px solid rgba(107,255,42,.25);
+  cursor:pointer;
+}
+.ads-dot.active{
+  width:28px;
+  border-radius:999px;
+  background:#6bff2a;
+}
+#adEditModal .modal-content{
+  max-width:560px;
+  border-radius:28px;
+  padding:22px;
+  background:linear-gradient(180deg,#101010,#151515);
+  border:1px solid rgba(107,255,42,.22);
+  box-shadow:0 20px 50px rgba(0,0,0,.55);
+}
+.ad-upload-box{
+  position:relative;
+  min-height:230px;
+  border:2px dashed rgba(107,255,42,.52);
+  border-radius:24px;
+  background:
+    radial-gradient(circle at top right, rgba(107,255,42,.12), transparent 34%),
+    #0b0b0b;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  overflow:hidden;
+  margin:14px 0 10px;
+  cursor:pointer;
+}
+.ad-upload-box:hover{
+  border-color:#6bff2a;
+  box-shadow:0 0 0 4px rgba(107,255,42,.08);
+}
+.ad-upload-icon{
+  width:70px;
+  height:70px;
+  border-radius:22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 12px;
+  font-size:34px;
+  background:linear-gradient(135deg,#6bff2a,#49d71c);
+  color:#071007;
+  box-shadow:0 12px 28px rgba(107,255,42,.18);
+}
+.ad-upload-title{
+  color:#fff;
+  font-size:22px;
+  font-weight:900;
+  margin-bottom:8px;
+}
+.ad-upload-text{
+  color:#b8efb8;
+  font-size:14px;
+}
 #adImagePreview{
+  position:absolute;
+  inset:0;
   width:100%;
-  height:180px;
+  height:100%;
   object-fit:contain;
   background:#fff;
-  border-radius:16px;
-  margin:10px 0;
+  display:none;
+  padding:10px;
+}
+#adImageFile{
   display:none;
 }
 #adProductPickerSearch{
@@ -1547,14 +1662,24 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
 }
 @media(max-width:700px){
   .ads-section{padding-left:14px;padding-right:14px;}
-  .ad-card{border-radius:22px;min-height:140px;}
-  .ad-card img{height:170px;}
-  .ad-card-placeholder{min-height:140px;padding:22px;}
+  .ad-card{border-radius:22px;min-height:160px;}
+  .ad-card img{height:190px;}
+  .ad-card-placeholder{min-height:160px;padding:22px;}
   .ad-card-placeholder-title{font-size:28px;}
   .ad-card-placeholder-text{font-size:15px;}
   .ad-bind-btn{right:105px;padding:8px 10px;font-size:12px;}
   .ad-edit-btn,.ad-delete-btn{padding:8px 10px;font-size:12px;}
+  .ads-arrow{width:38px;height:38px;font-size:24px;}
+  .ads-arrow-left{left:8px;}
+  .ads-arrow-right{right:8px;}
+  #adEditModal .modal-content{padding:16px;}
+  .ad-upload-box{min-height:190px;border-radius:20px;}
   .ad-picker-list{grid-template-columns:1fr;}
+}
+
+
+.ads-slider:hover .ads-track{
+  transition-duration:.35s;
 }
 
 </style>
@@ -1687,7 +1812,14 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
   <div class="ads-toolbar">
     <button class="ads-add-btn" onclick="openAdEditModal()" type="button">➕ Додати рекламне фото</button>
   </div>
-  <div class="ads-list" id="adsList"></div>
+  <div class="ads-slider">
+    <button class="ads-arrow ads-arrow-left" onclick="prevAdSlide()" type="button" aria-label="Попередня реклама">‹</button>
+    <div class="ads-viewport">
+      <div class="ads-track" id="adsList"></div>
+    </div>
+    <button class="ads-arrow ads-arrow-right" onclick="nextAdSlide()" type="button" aria-label="Наступна реклама">›</button>
+  </div>
+  <div class="ads-dots" id="adsDots"></div>
 </section>
 
 <div class="top-main-categories" id="topMainCategories"></div>
@@ -1785,11 +1917,18 @@ input,textarea,select{border-radius:14px;background:#f5f5f5;color:#111;}
 
 <div class="modal" id="adEditModal" onclick="handleModalBackdrop(event, 'adEditModal', closeAdEditModal)">
   <div class="modal-content">
-    <h3 id="adEditTitle" style="margin-top:0;">Рекламне фото</h3>
-    <img id="adImagePreview" alt="Превʼю реклами"/>
+    <h3 id="adEditTitle" style="margin:0 0 6px;">Рекламне фото</h3>
+    <div style="color:#b8efb8;font-size:14px;">Додай одне фото для рекламного слайду. Наступні реклами будуть гортатися в цьому ж полі.</div>
+    <label class="ad-upload-box" for="adImageFile">
+      <img id="adImagePreview" alt="Превʼю реклами"/>
+      <div class="ad-upload-empty" id="adUploadEmpty">
+        <div class="ad-upload-icon">＋</div>
+        <div class="ad-upload-title">Натисни, щоб додати фото</div>
+        <div class="ad-upload-text">На одну рекламу можна додати тільки одне фото</div>
+      </div>
+    </label>
     <input accept="image/*" id="adImageFile" type="file"/>
-    <div class="office-help">На одну рекламу можна додати тільки одне фото.</div>
-    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px;">
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;">
       <button onclick="saveAdPhoto()">Зберегти фото</button>
       <button onclick="closeAdEditModal()" style="background:#444;color:#fff;">Скасувати</button>
       <button id="deleteAdBtn" onclick="deleteCurrentAd()" style="background:#c62828;color:#fff;display:none;">Видалити</button>
@@ -2426,6 +2565,7 @@ function renderCatalogUI(){
   updateSubCategoryBackButton();
   syncCartWithProducts();
   renderProducts();
+  loadAdsLocalBackup();
   renderAds();
   hideLoader();
 }
@@ -2483,6 +2623,8 @@ let editingAdId = null;
 let tempAdImage = "";
 let selectingAdId = null;
 let selectedAdProductId = null;
+let currentAdSlide = 0;
+let adsAutoSlideTimer = null;
 let currentMainCategoryFilter = '';
 var CART_STORAGE_KEY = 'inst_asortiments_cart';
 var selectedProducts = [];
@@ -3754,10 +3896,108 @@ async function submitOrder(channel){
 
 
 
+
+function saveAdsLocalBackup(){
+  try{
+    localStorage.setItem('insort_ads_backup', JSON.stringify(Array.isArray(ads) ? ads : []));
+  }catch(e){}
+}
+
+function loadAdsLocalBackup(){
+  try{
+    const saved = localStorage.getItem('insort_ads_backup');
+    if(saved && (!Array.isArray(ads) || ads.length === 0)){
+      ads = JSON.parse(saved) || [];
+    }
+  }catch(e){}
+}
+
 /* ===== Рекламні фото + привʼязка товарів ===== */
 function getProductByIdForAd(id){
   return products.find(p => String(p.id) === String(id));
 }
+
+function updateAdsSlider(){
+  const track = document.getElementById('adsList');
+  const dotsWrap = document.getElementById('adsDots');
+  const slider = document.querySelector('.ads-slider');
+  if(!track) return;
+
+  const count = Array.isArray(ads) && ads.length ? ads.length : 1;
+  if(currentAdSlide >= count) currentAdSlide = count - 1;
+  if(currentAdSlide < 0) currentAdSlide = 0;
+
+  track.style.transform = `translateX(-${currentAdSlide * 100}%)`;
+
+  if(dotsWrap){
+    dotsWrap.innerHTML = '';
+    for(let i = 0; i < count; i++){
+      const dot = document.createElement('div');
+      dot.className = 'ads-dot' + (i === currentAdSlide ? ' active' : '');
+      dot.addEventListener('click', () => goToAdSlide(i));
+      dotsWrap.appendChild(dot);
+    }
+  }
+
+  if(slider){
+    slider.querySelectorAll('.ads-arrow').forEach(btn => {
+      btn.style.display = count > 1 ? 'flex' : 'none';
+    });
+  }
+}
+
+function goToAdSlide(index){
+  const count = Array.isArray(ads) && ads.length ? ads.length : 1;
+  currentAdSlide = Math.max(0, Math.min(index, count - 1));
+  updateAdsSlider();
+}
+
+function nextAdSlide(){
+  const count = Array.isArray(ads) && ads.length ? ads.length : 1;
+  if(count <= 1) return;
+  currentAdSlide = (currentAdSlide + 1) % count;
+  updateAdsSlider();
+}
+
+function prevAdSlide(){
+  const count = Array.isArray(ads) && ads.length ? ads.length : 1;
+  if(count <= 1) return;
+  currentAdSlide = (currentAdSlide - 1 + count) % count;
+  updateAdsSlider();
+}
+
+function startAdsAutoSlide(){
+  stopAdsAutoSlide();
+  if(!Array.isArray(ads) || ads.length <= 1) return;
+
+  adsAutoSlideTimer = setInterval(() => {
+    const modalOpen = Array.from(document.querySelectorAll('.modal'))
+      .some(m => getComputedStyle(m).display !== 'none');
+
+    if(modalOpen || adminMode){
+      return;
+    }
+
+    nextAdSlide();
+  }, 4500);
+}
+
+function stopAdsAutoSlide(){
+  if(adsAutoSlideTimer){
+    clearInterval(adsAutoSlideTimer);
+    adsAutoSlideTimer = null;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const slider = document.querySelector('.ads-slider');
+  if(slider){
+    slider.addEventListener('mouseenter', stopAdsAutoSlide);
+    slider.addEventListener('mouseleave', startAdsAutoSlide);
+    slider.addEventListener('touchstart', stopAdsAutoSlide, {passive:true});
+    slider.addEventListener('touchend', startAdsAutoSlide, {passive:true});
+  }
+});
 
 function renderAds(){
   const list = document.getElementById('adsList');
@@ -3765,22 +4005,29 @@ function renderAds(){
   list.innerHTML = '';
 
   if(!Array.isArray(ads) || ads.length === 0){
-    const empty = document.createElement('div');
-    empty.className = 'ad-card';
-    empty.innerHTML = `
-      <div class="ad-card-placeholder">
-        <div>
-          <div class="ad-card-placeholder-title">АКЦІЇ ТА ЗНИЖКИ</div>
-          <div class="ad-card-placeholder-text">Додай рекламне фото в Офісі та прикріпи до нього товар.</div>
+    const slide = document.createElement('div');
+    slide.className = 'ad-slide';
+    slide.innerHTML = `
+      <div class="ad-card" onclick="${isAdminUser() ? 'openAdEditModal()' : ''}">
+        <div class="ad-card-placeholder">
+          <div>
+            <div class="ad-card-placeholder-title">АКЦІЇ ТА ЗНИЖКИ</div>
+            <div class="ad-card-placeholder-text">Додай рекламне фото в Офісі. Усі реклами будуть гортатися в цьому одному полі.</div>
+          </div>
         </div>
       </div>
     `;
-    list.appendChild(empty);
+    list.appendChild(slide);
+    updateAdsSlider();
+    startAdsAutoSlide();
     return;
   }
 
   ads.forEach(ad => {
     const product = getProductByIdForAd(ad.productId);
+    const slide = document.createElement('div');
+    slide.className = 'ad-slide';
+
     const card = document.createElement('div');
     card.className = 'ad-card';
     card.dataset.id = ad.id;
@@ -3819,8 +4066,12 @@ function renderAds(){
       }
     });
 
-    list.appendChild(card);
+    slide.appendChild(card);
+    list.appendChild(slide);
   });
+
+  updateAdsSlider();
+  startAdsAutoSlide();
 }
 
 function openAdEditModal(id = null){
@@ -3831,12 +4082,15 @@ function openAdEditModal(id = null){
   document.getElementById('adEditTitle').innerText = id ? 'Редагувати рекламу' : 'Додати рекламне фото';
   document.getElementById('deleteAdBtn').style.display = id ? 'inline-block' : 'none';
   const preview = document.getElementById('adImagePreview');
+  const empty = document.getElementById('adUploadEmpty');
   if(tempAdImage){
     preview.src = tempAdImage;
     preview.style.display = 'block';
+    if(empty) empty.style.display = 'none';
   }else{
     preview.removeAttribute('src');
     preview.style.display = 'none';
+    if(empty) empty.style.display = 'block';
   }
   document.getElementById('adImageFile').value = '';
   document.getElementById('adEditModal').style.display = 'flex';
@@ -3859,8 +4113,10 @@ if(adImageFileInput){
     reader.onload = (e) => {
       tempAdImage = e.target.result;
       const preview = document.getElementById('adImagePreview');
+      const empty = document.getElementById('adUploadEmpty');
       preview.src = tempAdImage;
       preview.style.display = 'block';
+      if(empty) empty.style.display = 'none';
     };
     reader.readAsDataURL(file);
   });
@@ -3883,8 +4139,12 @@ function saveAdPhoto(){
       image: tempAdImage,
       productId: ''
     });
+    currentAdSlide = ads.length - 1;
   }
 
+  saveAdsLocalBackup();
+  saveAdsLocalBackup();
+  saveAdsLocalBackup();
   saveToDatabase();
   renderAds();
   closeAdEditModal();
@@ -3897,7 +4157,12 @@ function deleteCurrentAd(){
 function deleteAdById(id){
   if(!isAdminUser()) return;
   if(!confirm('Видалити цю рекламу?')) return;
+  const removedIndex = ads.findIndex(ad => String(ad.id) === String(id));
   ads = ads.filter(ad => String(ad.id) !== String(id));
+  if(removedIndex >= 0 && currentAdSlide >= removedIndex) currentAdSlide = Math.max(0, currentAdSlide - 1);
+  saveAdsLocalBackup();
+  saveAdsLocalBackup();
+  saveAdsLocalBackup();
   saveToDatabase();
   renderAds();
   closeAdEditModal();
@@ -3958,6 +4223,7 @@ function saveAdLinkedProduct(){
     return;
   }
   ad.productId = selectedAdProductId;
+  saveAdsLocalBackup();
   saveToDatabase();
   renderAds();
   closeAdProductPickerModal();
