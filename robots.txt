@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://09fushan90.github.io/inst-asortiments/sitemap.xml
+Sitemap: https://09fushan90.github.io/InSort/sitemap.xml
